@@ -42,26 +42,17 @@ jobs:
           dotnet-ef database update --verbose
 
       - name: Publish Project
-        run: dotnet publish "Dimakotso Construction/Dimakotso Construction.csproj" `
-          --configuration Release `
-          --no-build `
-          --output ./publish
+        run: |
+          dotnet publish "Dimakotso Construction/Dimakotso Construction.csproj" `
+            --configuration Release `
+            --no-build `
+            --output ./publish
 
       - name: Verify Publish Output
         shell: pwsh
         run: |
+          Write-Host "Published files:"
           Get-ChildItem ./publish -Recurse
-
-      - name: Verify MSDeploy Secrets
-        shell: pwsh
-        env:
-          SERVER: ${{ secrets.MSDEPLOY_SERVICE_URL }}
-          SITE: ${{ secrets.MSDEPLOY_SITE_NAME }}
-          USERNAME: ${{ secrets.MSDEPLOY_USERNAME }}
-        run: |
-          Write-Host "Server: '$env:SERVER'"
-          Write-Host "Site: '$env:SITE'"
-          Write-Host "Username exists: $([string]::IsNullOrWhiteSpace($env:USERNAME) -eq $false)"
 
       - name: Deploy to MonsterASP
         shell: pwsh
@@ -79,9 +70,14 @@ jobs:
 
           $publishPath = (Resolve-Path "./publish").Path
 
+          Write-Host "Deploying from: $publishPath"
+          Write-Host "Server: $env:SERVER"
+          Write-Host "Site: $env:SITE"
+
           & $msdeploy `
             -verb:sync `
             "-source:contentPath=$publishPath" `
-            "-dest:contentPath=$env:SITE,computerName=https://$env:SERVER/msdeploy.axd?site=$env:SITE,userName=$env:USERNAME,password=$env:PASSWORD,authType=Basic" `
+            "-dest:auto,computerName=$env:SERVER,userName=$env:USERNAME,password=$env:PASSWORD,authType=Basic,includeAcls=False" `
             -allowUntrusted `
+            -enableRule:DoNotDeleteRule `
             -verbose
