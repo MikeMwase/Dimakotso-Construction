@@ -2,7 +2,8 @@ name: Deploy to MonsterASP
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "master" ]
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -18,11 +19,12 @@ jobs:
       - name: Build and Publish
         run: dotnet publish -c Release -o ./publish
 
-      # Run EF Migrations using the connection string secret
+      # Run EF Migrations
       - name: Run Entity Framework Migrations
         run: |
           dotnet tool install --global dotnet-ef
-          dotnet ef database update --connection "${{ secrets.DB_CONNECTION_STRING }}" --Dimakotso Construction.csproj
+          # The --project flag is mandatory and requires quotes for paths with spaces
+          dotnet ef database update --connection "${{ secrets.DB_CONNECTION_STRING }}" --project "Dimakotso Construction.csproj"
 
       # Deploy using the Publish Profile content
       - name: Deploy to MonsterASP
