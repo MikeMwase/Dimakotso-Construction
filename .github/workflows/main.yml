@@ -42,7 +42,16 @@ jobs:
           dotnet-ef database update --verbose
 
       - name: Publish Project
-        run: dotnet publish "Dimakotso Construction/Dimakotso Construction.csproj" -c Release --no-build -o ./publish
+        run: |
+          dotnet publish "Dimakotso Construction/Dimakotso Construction.csproj" `
+            --configuration Release `
+            --no-build `
+            --output ./publish
+
+      - name: Verify Publish Output
+        shell: pwsh
+        run: |
+          Get-ChildItem ./publish -Recurse
 
       - name: Deploy to MonsterASP
         shell: pwsh
@@ -54,8 +63,17 @@ jobs:
         run: |
           $msdeploy = "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe"
 
+          if (!(Test-Path $msdeploy)) {
+            throw "msdeploy.exe not found at $msdeploy"
+          }
+
+          $source = "contentPath=$((Resolve-Path ./publish).Path)"
+          $dest = "contentPath=$env:MSDEPLOY_SITE,computerName=https://$env:MSDEPLOY_SERVER/msdeploy.axd?site=$env:MSDEPLOY_SITE,userName=$env:MSDEPLOY_USERNAME,password=$env:MSDEPLOY_PASSWORD,authType=Basic"
+
           & $msdeploy `
             -verb:sync `
-            -source:contentPath="$PWD\publish" `
-            -dest:contentPath="$env:MSDEPLOY_SITE",computerName="https://$env:MSDEPLOY_SERVER/msdeploy.axd?site=$env:MSDEPLOY_SITE",userName="$env:MSDEPLOY_USERNAME",password="$env:MSDEPLOY_PASSWORD",authType="Basic" `
-            -allowUntrusted
+            "-source:$source" `
+            "-dest:$dest" `
+            -enableRule:AppOffline `
+            -allowUntrusted `
+            -verbose
