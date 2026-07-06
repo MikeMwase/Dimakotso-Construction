@@ -1,0 +1,78 @@
+﻿@model Dimakotso_Construction.Models.Assessors
+
+@{
+    ViewData["Title"] = "Delete Assessor";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm border-0 border-danger">
+        <div class="card-header py-3 bg-danger">
+            <h4 class="mb-0 text-white">
+                <i class="bi bi-exclamation-triangle me-2"></i>Delete Assessor
+            </h4>
+        </div>
+        <div class="card-body p-4">
+
+            <div class="alert alert-danger d-flex align-items-center gap-2 mb-4">
+                <i class="bi bi-exclamation-circle-fill fs-5"></i>
+                <span>Are you sure you want to permanently delete this assessor? This action cannot be undone.</span>
+            </div>
+
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <div class="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold"
+                     style="width:56px;height:56px;min-width:56px;background:#1a3a5c;font-size:18px;">
+                    @Model.FirstName[0]@Model.LastName[0]
+                </div>
+                <div>
+                    <h5 class="mb-0 fw-bold">@Model.FirstName @Model.LastName</h5>
+                    <small class="text-muted">Assessor</small>
+                </div>
+            </div>
+
+            <hr />
+
+            <dl class="row">
+                <dt class="col-sm-3 text-muted">Contact</dt>
+                <dd class="col-sm-9">
+                    <i class="bi bi-envelope me-1 text-muted"></i>@Model.Contact
+                </dd>
+
+                <dt class="col-sm-3 text-muted">Employee ID</dt>
+                <dd class="col-sm-9">@Model.EmployeeId</dd>
+
+                <dt class="col-sm-3 text-muted">Department</dt>
+                <dd class="col-sm-9">@Model.Department</dd>
+
+                <dt class="col-sm-3 text-muted">Status</dt>
+                <dd class="col-sm-9">
+                    @{
+                        var badgeClass = Model.Status switch
+                        {
+                            "Active" => "bg-success",
+                            "Inactive" => "bg-secondary",
+                            "Expiring Soon" => "bg-warning text-dark",
+                            _ => "bg-light text-dark"
+                        };
+                    }
+                    <span class="badge @badgeClass px-3 py-2">@Model.Status</span>
+                </dd>
+
+                <dt class="col-sm-3 text-muted">Qualifications</dt>
+                <dd class="col-sm-9">
+                    <span class="badge bg-primary px-3 py-2">@Model.qualifications</span>
+                </dd>
+            </dl>
+        </div>
+        <div class="card-footer d-flex gap-2">
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="Id" />
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi bi-trash me-1"></i>Yes, Delete
+                </button>
+            </form>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Cancel
+            </a>
+        </div>
+    </div>
+</div>

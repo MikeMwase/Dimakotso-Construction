@@ -1,0 +1,56 @@
+﻿@page
+@model LoginModel
+
+@{
+    ViewData["Title"] = "Log in";
+}
+
+<style>
+    /* Center the login card vertically and horizontally */
+    .login-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 70vh;
+    }
+    .login-card {
+        width: 100%;
+        max-width: 450px;
+        padding: 40px;
+        background: #ffffff;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+</style>
+
+<div class="login-wrapper">
+    <div class="login-card">
+        <section>
+            <form id="account" method="post">
+                <h2 class="text-center fw-bold mb-4">Sign In</h2>
+                <hr />
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Email" class="form-control" autocomplete="username" placeholder="name@example.com" />
+                    <label asp-for="Input.Email">Username / Email</label>
+                </div>
+                
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.Password" class="form-control" autocomplete="current-password" placeholder="password" />
+                    <label asp-for="Input.Password">Password</label>
+                </div>
+                
+                <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary mb-3">Sign In</button>
+                
+                <div class="text-center">
+                    <p><a id="forgot-password" asp-page="./ForgotPassword">Forgot password?</a></p>
+                </div>
+            </form>
+        </section>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

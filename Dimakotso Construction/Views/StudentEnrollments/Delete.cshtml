@@ -1,0 +1,71 @@
+﻿@model Dimakotso_Construction.Models.StudentEnrollment
+
+@{
+    ViewData["Title"] = "Delete Enrollment Record";
+}
+
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
+        <div>
+            <span class="badge bg-danger px-3 py-2 rounded-pill text-uppercase tracking-wider mb-2">Critical Action</span>
+            <h1 class="h3 fw-bold text-dark m-0">Confirm Permanent Record Deletion</h1>
+            <p class="text-muted small mb-0">You are about to irreversibly remove the profile for: <span class="fw-bold text-dark">@Model.FirstNames @Model.Surname</span></p>
+        </div>
+        <div>
+            <a asp-action="Index" class="btn btn-outline-secondary btn-sm fw-semibold d-flex align-items-center gap-1">
+                <i class="bi bi-arrow-left-circle-fill"></i> Cancel & Return
+            </a>
+        </div>
+    </div>
+
+    <div class="alert alert-warning border-0 shadow-sm mb-4 d-flex align-items-center" role="alert">
+        <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+        <div>
+            <h6 class="fw-bold mb-1">Warning: Irreversible Action</h6>
+            <p class="mb-0 small">Deletion will purge all associated compliance data, SAQA records, and historical tracking logs for this student. This cannot be undone.</p>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm" style="border-radius: 12px; overflow: hidden;">
+        <div class="card-header bg-dark text-white py-3 px-4">
+            <h5 class="mb-0 fw-bold d-flex align-items-center gap-2">
+                <i class="bi bi-trash-fill"></i> Enrollment Record Verification
+            </h5>
+        </div>
+
+        <div class="card-body p-4">
+            <dl class="row mb-0">
+                <dt class="col-sm-3 text-muted small text-uppercase">Tracking Ref</dt>
+                <dd class="col-sm-3 fw-bold font-monospace">@Model.RegistrationNumber</dd>
+
+                <dt class="col-sm-3 text-muted small text-uppercase">Full Name</dt>
+                <dd class="col-sm-3">@Model.FirstNames @Model.Surname</dd>
+
+                <dt class="col-sm-3 text-muted small text-uppercase">ID / Passport</dt>
+                <dd class="col-sm-3 font-monospace">@Model.IdentificationNumber</dd>
+
+                <dt class="col-sm-3 text-muted small text-uppercase">SAQA ID</dt>
+                <dd class="col-sm-3 font-monospace">@Model.SaqaId</dd>
+
+                <dt class="col-sm-3 text-muted small text-uppercase">Program Title</dt>
+                <dd class="col-sm-9">@Model.TargetProgramTitle</dd>
+
+                <dt class="col-sm-3 text-muted small text-uppercase">Status</dt>
+                <dd class="col-sm-3"><span class="badge bg-info text-dark">@Model.Status</span></dd>
+
+                <dt class="col-sm-3 text-muted small text-uppercase">Email</dt>
+                <dd class="col-sm-3">@Model.Email</dd>
+            </dl>
+        </div>
+
+        <div class="card-footer bg-light p-4 d-flex justify-content-end gap-2">
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="Id" />
+                <a asp-action="Index" class="btn btn-link text-decoration-none text-muted px-4">Keep Record</a>
+                <button type="submit" class="btn btn-danger px-4 fw-semibold">
+                    <i class="bi bi-trash-fill"></i> Permanently Delete Record
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

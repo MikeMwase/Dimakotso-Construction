@@ -1,0 +1,81 @@
+﻿@model Dimakotso_Construction.Models.StudentEnrollment
+
+@{
+    ViewData["Title"] = "Student Details";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Student Details</h2>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-primary">Edit</a>
+            <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Personal Information -->
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-primary text-white">Personal Information</div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5 text-muted">Full Name</dt>
+                        <dd class="col-sm-7">@Model.FirstNames @Model.Surname</dd>
+
+                        <dt class="col-sm-5 text-muted">ID Number</dt>
+                        <dd class="col-sm-7">@Html.DisplayFor(m => m.IdentificationNumber)</dd>
+
+                        <dt class="col-sm-5 text-muted">Date of Birth</dt>
+                        <dd class="col-sm-7">@Html.DisplayFor(m => m.DateOfBirth)</dd>
+
+                        <dt class="col-sm-5 text-muted">Gender</dt>
+                        <dd class="col-sm-7">@Html.DisplayFor(m => m.Gender)</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Information -->
+        <div class="col-md-6">
+            <div class="card h-100 shadow-sm">
+                <div class="card-header bg-secondary text-white">Contact Details</div>
+                <div class="card-body">
+                    <dl class="row mb-0">
+                        <dt class="col-sm-5 text-muted">Email</dt>
+                        <dd class="col-sm-7">@Html.DisplayFor(m => m.Email)</dd>
+
+                        <dt class="col-sm-5 text-muted">Phone</dt>
+                        <dd class="col-sm-7">@Html.DisplayFor(m => m.MobileNumber)</dd>
+
+                        <dt class="col-sm-5 text-muted">Address</dt>
+                        <dd class="col-sm-7">@Html.DisplayFor(m => m.HomeAddress)</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enrollment Information -->
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">Enrollment Status</div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label class="text-muted small d-block">Program</label>
+                            <strong>@Html.DisplayFor(m => m.TargetProgramTitle)</strong>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="text-muted small d-block">Status</label>
+                            <span class="badge bg-info text-dark">@Html.DisplayFor(m => m.Status)</span>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="text-muted small d-block">POPIA Consent</label>
+                            @(Model.HasConsentedToPopiaDataSharing ? "Yes" : "No")
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

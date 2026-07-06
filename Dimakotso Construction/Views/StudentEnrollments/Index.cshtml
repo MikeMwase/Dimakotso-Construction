@@ -1,0 +1,50 @@
+﻿@model IEnumerable<Dimakotso_Construction.Models.StudentEnrollment>
+
+@{
+    ViewData["Title"] = "Student Enrollments";
+}
+
+<div class="container-fluid mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Student Enrollments</h1>
+        <a asp-action="Create" class="btn btn-primary">Create New</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped table-hover align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th>Registration #</th>
+                    <th>Name</th>
+                    <th>ID Number</th>
+                    <th>Gender</th>
+                    <th>Program</th>
+                    <th>Status</th>
+                    <th>Contact</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.RegistrationNumber)</td>
+                        <td>@item.FirstNames @item.Surname</td>
+                        <td>@Html.DisplayFor(modelItem => item.IdentificationNumber)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Gender)</td>
+                        <td>@Html.DisplayFor(modelItem => item.TargetProgramTitle)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Status)</td>
+                        <td>
+                            <small>@item.Email<br />@item.MobileNumber</small>
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

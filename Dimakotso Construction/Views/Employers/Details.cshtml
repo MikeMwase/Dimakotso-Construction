@@ -1,0 +1,44 @@
+﻿@model Dimakotso_Construction.Models.Employer
+
+@{
+    ViewData["Title"] = "Employer Details";
+}
+
+<h1>Employer Details</h1>
+
+<div class="card shadow-sm mt-3">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.CompanyName)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.CompanyName)</dd>
+
+            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ContactPerson)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.ContactPerson)</dd>
+
+            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ContactEmail)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.ContactEmail)</dd>
+
+            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ContactPhone)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.ContactPhone)</dd>
+
+            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Sector)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.Sector)</dd>
+
+            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Size)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.Size)</dd>
+
+            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.City)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.City)</dd>
+
+            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Province)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.Province)</dd>
+
+            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Status)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(model => model.Status)</dd>
+        </dl>
+    </div>
+    <div class="card-footer">
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning">Edit</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>

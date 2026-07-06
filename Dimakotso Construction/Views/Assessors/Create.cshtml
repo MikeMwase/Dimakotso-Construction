@@ -1,0 +1,98 @@
+﻿@model Dimakotso_Construction.Models.Assessors
+
+@{
+    ViewData["Title"] = "Add Assessor";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-sm border-0">
+        <div class="card-header py-3" style="background:#1a3a5c;">
+            <h4 class="mb-0 text-white">
+                <i class="bi bi-person-badge me-2"></i>Add New Assessor
+            </h4>
+        </div>
+        <div class="card-body p-4">
+
+            <form asp-action="Create">
+                <div asp-validation-summary="All" class="alert alert-danger d-none" id="valSummary"></div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label asp-for="FirstName" class="form-label fw-semibold"></label>
+                            <input asp-for="FirstName" class="form-control" placeholder="e.g. Thabo" />
+                            <span asp-validation-for="FirstName" class="text-danger small"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="EmployeeId" class="form-label fw-semibold"></label>
+                            <input asp-for="EmployeeId" class="form-control" placeholder="e.g. EMPASSR22-001_10" />
+                            <span asp-validation-for="EmployeeId" class="text-danger small"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="Department" class="form-label fw-semibold"></label>
+                            <select asp-for="Department" class="form-select">
+                                <option value="">-- Select Department --</option>
+                                <option>Construction</option>
+                                <option>Electrical</option>
+                                <option>H&S</option>
+                                <option>Plumbing</option>
+                                <option>Civil Engineering</option>
+                                <option>N/A</option>
+                            </select>
+                            <span asp-validation-for="Department" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label asp-for="LastName" class="form-label fw-semibold"></label>
+                            <input asp-for="LastName" class="form-control" placeholder="e.g. Molefe" />
+                            <span asp-validation-for="LastName" class="text-danger small"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="Contact" class="form-label fw-semibold"></label>
+                            <input asp-for="Contact" class="form-control" placeholder="e.g. email or phone" />
+                            <span asp-validation-for="Contact" class="text-danger small"></span>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label asp-for="Status" class="form-label fw-semibold"></label>
+                            <select asp-for="Status" class="form-select">
+                                <option value="">-- Select Status --</option>
+                                <option>Active</option>
+                                <option>Inactive</option>
+                                <option>Expiring Soon</option>
+                            </select>
+                            <span asp-validation-for="Status" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group mb-4">
+                    <label asp-for="qualifications" class="form-label fw-semibold">Qualifications</label>
+                    <input asp-for="qualifications" class="form-control"
+                           placeholder="e.g. 2 Active" />
+                    <span asp-validation-for="qualifications" class="text-danger small"></span>
+                    <div class="form-text text-muted">
+                        Summarise active qualifications, e.g. "3 Active" or "1 Active, 1 Expired"
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-primary px-4">
+                        <i class="bi bi-person-plus me-1"></i>Add Assessor
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-1"></i>Back to List
+                    </a>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

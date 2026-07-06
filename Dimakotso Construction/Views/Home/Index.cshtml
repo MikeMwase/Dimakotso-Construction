@@ -1,0 +1,1262 @@
+@{
+ViewData["Title"] = "Home";
+}
+
+@section Styles {
+    <style>
+
+        /* ── SHARED ── */
+            section {
+            padding: 80px 40px;
+        }
+
+            .container-inner {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+            .section-tag {
+                    font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+                    color: var(--gold);
+            margin-bottom: 10px;
+            display: block;
+
+        }
+
+            .section-title {
+                    font-family: 'Playfair Display', serif;
+                    font-size: 34px;
+            font-weight: 700;
+                    color: var(--text-dark);
+            margin-bottom: 14px;
+                    line-height: 1.2;
+
+        }
+
+            .section-sub {
+                    font-size: 16px;
+            color: var(--text-mid);
+                    line-height: 1.75;
+            max-width: 560px;
+
+        }
+
+            .section-header {
+            margin-bottom: 48px;
+        }
+
+
+        /* ── HERO ── */
+            .hero {
+                    background: var(--navy);
+                    padding: 80px 40px;
+                    position: relative;
+                    overflow: hidden;
+
+        }
+
+            .hero::before {
+                    content: '';
+                    position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 40%;
+                    background: linear-gradient(135deg, rgba(200,146,42,0.07) 0%, transparent 60%);
+                    pointer-events: none;
+
+        }
+
+            .hero-grid {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 64px;
+                    align-items: center;
+                    max-width: 1100px;
+                    margin: 0 auto;
+
+        }
+
+            .hero-tag {
+                    display: inline-block;
+                    background: rgba(200,146,42,0.15);
+                    color: var(--gold-light);
+                    font-size: 11px;
+            letter-spacing: 2px;
+                    text-transform: uppercase;
+                    padding: 5px 14px;
+            border-radius: 20px;
+                    border: 1px solid rgba(200,146,42,0.3);
+                    margin-bottom: 24px;
+
+        }
+
+            .hero h1 {
+                    font-family: 'Playfair Display', serif;
+                    font-size: 48px;
+            line-height: 1.15;
+                    color: #fff;
+            margin-bottom: 20px;
+            font-weight: 700;
+
+        }
+
+                .hero h1 span {
+                color: var(--gold-light);
+            }
+
+            .hero p {
+                    color: rgba(255,255,255,0.65);
+                    font-size: 16px;
+            line-height: 1.8;
+                    margin-bottom: 36px;
+
+        }
+
+            .hero-btns {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+            .btn-primary-gold {
+                    background: var(--gold);
+            color: var(--navy);
+                    padding: 13px 28px;
+            border-radius: 4px;
+                    text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+                    transition: background 0.2s;
+
+        }
+
+                .btn-primary-gold:hover {
+                background: var(--gold-light);
+                color: var(--navy);
+            }
+
+            .btn-outline-white {
+                    background: transparent;
+            color: #fff;
+                    padding: 13px 28px;
+            border-radius: 4px;
+                    text-decoration: none;
+            font-size: 14px;
+                    border: 1px solid rgba(255,255,255,0.3);
+                    transition: border-color 0.2s, color 0.2s;
+
+        }
+
+                .btn-outline-white:hover {
+                border-color: rgba(255,255,255,0.6);
+                color: #fff;
+            }
+
+
+        /* Hero visual card */
+            .hero-visual {
+                    background: rgba(255,255,255,0.04);
+                    border: 1px solid rgba(200,146,42,0.2);
+                    border-radius: 12px;
+            padding: 32px;
+                    display: flex;
+            flex-direction: column;
+            gap: 16px;
+
+        }
+
+            .stat-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+            .stat-box {
+                    background: rgba(255,255,255,0.06);
+                    border: 1px solid rgba(200,146,42,0.12);
+                    border-radius: 8px;
+            padding: 20px;
+
+        }
+
+            .stat-num {
+                    font-family: 'Playfair Display', serif;
+                    font-size: 32px;
+            color: var(--gold-light);
+            font-weight: 700;
+            line-height: 1;
+
+        }
+
+            .stat-label {
+                    font-size: 11px;
+            color: rgba(255,255,255,0.4);
+                    margin-top: 6px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+
+        }
+
+            .stat-divider {
+            height: 1px;
+            background: rgba(200,146,42,0.15);
+        }
+
+            .training-badge {
+                    background: rgba(200,146,42,0.08);
+                    border: 1px solid rgba(200,146,42,0.2);
+                    border-radius: 8px;
+            padding: 14px 16px;
+                    display: flex;
+            align-items: center;
+            gap: 12px;
+
+        }
+
+            .training-badge-icon {
+                    width: 38px;
+            height: 38px;
+                    background: var(--gold);
+            border-radius: 6px;
+                    display: flex;
+            align-items: center;
+            justify-content: center;
+                    flex-shrink: 0;
+
+        }
+
+                .training-badge-icon i {
+                font-size: 18px;
+                color: var(--navy);
+            }
+
+            .training-badge-text strong {
+                    color: #fff;
+            font-size: 14px;
+                    font-weight: 500;
+            display: block;
+            margin-bottom: 2px;
+
+        }
+
+            .training-badge-text span {
+            color: rgba(255,255,255,0.45);
+            font-size: 12px;
+        }
+
+
+        /* ── MISSION ── */
+            .mission-bg {
+                    background: #fff;
+                    border-top: 1px solid var(--border);
+                    border-bottom: 1px solid var(--border);
+
+        }
+
+            .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 64px;
+            align-items: start;
+        }
+
+            .mission-card {
+                    border-left: 3px solid var(--gold);
+                    padding-left: 24px;
+                    margin-bottom: 28px;
+
+        }
+
+                .mission-card h3 {
+                        font-family: 'Playfair Display', serif;
+                        font-size: 20px;
+                color: var(--text-dark);
+                margin-bottom: 10px;
+
+            }
+
+                .mission-card p {
+                font-size: 15px;
+                color: var(--text-mid);
+                line-height: 1.75;
+                margin: 0;
+            }
+
+            .goals-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-top: 28px;
+        }
+
+            .goal-box {
+                    background: var(--off-white);
+                    border-radius: 8px;
+            padding: 20px;
+                    border: 1px solid var(--border);
+
+        }
+
+            .goal-period {
+                    font-size: 11px;
+            text-transform: uppercase;
+                    letter-spacing: 1.5px;
+            color: var(--gold);
+                    margin-bottom: 8px;
+            font-weight: 500;
+            display: block;
+
+        }
+
+            .goal-box p {
+            font-size: 13px;
+            color: var(--text-mid);
+            line-height: 1.65;
+            margin: 0;
+        }
+
+
+        /* ── VALUES ── */
+            .values-grid {
+                    display: grid;
+                    grid-template-columns: repeat(4, 1fr);
+                    gap: 16px;
+
+        }
+
+            .value-card {
+                    background: #fff;
+                    border-radius: 8px;
+            padding: 24px 20px;
+                    border: 1px solid var(--border);
+                    position: relative;
+            overflow: hidden;
+
+        }
+
+                .value-card::before {
+                        content: '';
+                        position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 3px;
+                        background: var(--gold);
+
+            }
+
+            .value-num {
+                    font-family: 'Playfair Display', serif;
+                    font-size: 38px;
+            color: rgba(200,146,42,0.1);
+                    font-weight: 700;
+            position: absolute;
+                    top: 8px;
+            right: 14px;
+            line-height: 1;
+
+        }
+
+            .value-card h4 {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+            .value-card p {
+            font-size: 13px;
+            color: var(--text-mid);
+            line-height: 1.65;
+            margin: 0;
+        }
+
+
+        /* ── PROGRAMMES ── */
+            .programmes-bg {
+            background: var(--navy);
+        }
+
+            .programmes-bg .section-title {
+            color: #fff;
+        }
+
+            .programmes-bg .section-tag {
+            color: var(--gold-light);
+        }
+
+            .programmes-bg .section-sub {
+            color: rgba(255,255,255,0.55);
+        }
+
+            .prog-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 48px;
+            align-items: start;
+        }
+
+            .prog-includes {
+                    background: rgba(200,146,42,0.08);
+                    border: 1px solid rgba(200,146,42,0.2);
+                    border-radius: 8px;
+            padding: 24px;
+
+        }
+
+                .prog-includes h4 {
+                        color: var(--gold-light);
+                        font-size: 11px;
+                text-transform: uppercase;
+                        letter-spacing: 1.5px;
+                margin-bottom: 18px;
+                font-weight: 500;
+
+            }
+
+            .prog-inc-row {
+                    display: flex;
+            align-items: center;
+            gap: 12px;
+                    padding: 10px 0;
+            border-bottom: 1px solid rgba(200,146,42,0.1);
+
+        }
+
+                .prog-inc-row:last-child {
+                border-bottom: none;
+            }
+
+                .prog-inc-row i {
+                color: var(--gold);
+                font-size: 16px;
+                flex-shrink: 0;
+            }
+
+                .prog-inc-row span {
+                color: rgba(255,255,255,0.75);
+                font-size: 14px;
+            }
+
+            .prog-list {
+                    display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+
+        }
+
+            .prog-item {
+                    background: rgba(255,255,255,0.05);
+                    border: 1px solid rgba(200,146,42,0.15);
+                    border-radius: 8px;
+            padding: 16px 18px;
+                    display: flex;
+            align-items: center;
+            gap: 12px;
+
+        }
+
+            .prog-dot {
+                    width: 8px;
+            height: 8px;
+                    background: var(--gold);
+            border-radius: 50%;
+            flex-shrink: 0;
+
+        }
+
+            .prog-item span {
+            color: rgba(255,255,255,0.8);
+            font-size: 14px;
+        }
+
+
+        /* ── TARGET MARKET ── */
+            .market-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+            .market-card {
+                    background: #fff;
+                    border-radius: 10px;
+            padding: 28px 20px;
+                    text-align: center;
+            border: 1px solid var(--border);
+                    transition: border-color 0.2s, transform 0.2s;
+
+        }
+
+                .market-card:hover {
+                border-color: var(--gold);
+                transform: translateY(-2px);
+            }
+
+            .market-icon {
+                    width: 52px;
+            height: 52px;
+                    background: rgba(200,146,42,0.1);
+                    border-radius: 12px;
+            margin: 0 auto 16px;
+                    display: flex;
+            align-items: center;
+            justify-content: center;
+                    font-size: 22px;
+            color: var(--gold);
+
+        }
+
+            .market-card h4 {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+            .market-card p {
+            font-size: 13px;
+            color: var(--text-mid);
+            line-height: 1.65;
+            margin: 0;
+        }
+
+
+        /* ── SWOT ── */
+            .swot-bg {
+            background: #fff;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+            .swot-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+            .swot-card {
+            border-radius: 10px;
+            padding: 28px 24px;
+        }
+
+            .swot-s {
+            background: rgba(15,30,61,0.04);
+            border: 1px solid rgba(15,30,61,0.1);
+        }
+
+            .swot-w {
+            background: rgba(200,146,42,0.06);
+            border: 1px solid rgba(200,146,42,0.18);
+        }
+
+            .swot-o {
+            background: rgba(39,120,77,0.05);
+            border: 1px solid rgba(39,120,77,0.15);
+        }
+
+            .swot-t {
+            background: rgba(180,60,60,0.05);
+            border: 1px solid rgba(180,60,60,0.15);
+        }
+
+            .swot-label {
+                    font-size: 11px;
+            text-transform: uppercase;
+                    letter-spacing: 2px;
+            margin-bottom: 4px;
+            font-weight: 500;
+            display: block;
+
+        }
+
+            .swot-s .swot-label {
+            color: var(--navy);
+        }
+
+            .swot-w .swot-label {
+            color: var(--gold);
+        }
+
+            .swot-o .swot-label {
+            color: #27784d;
+        }
+
+            .swot-t .swot-label {
+            color: #b43c3c;
+        }
+
+            .swot-card h3 {
+                    font-family: 'Playfair Display', serif;
+                    font-size: 20px;
+            color: var(--text-dark);
+            margin-bottom: 16px;
+
+        }
+
+            .swot-items {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+            .swot-item {
+                    display: flex;
+            align-items: flex-start;
+            gap: 10px;
+                    font-size: 14px;
+            color: var(--text-mid);
+            line-height: 1.55;
+
+        }
+
+                .swot-item::before {
+                content: '—';
+                color: var(--text-light);
+                flex-shrink: 0;
+            }
+
+
+        /* ── FINANCIALS ── */
+            .fin-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 28px;
+        }
+
+            .fin-table-wrap {
+                    background: #fff;
+                    border-radius: 10px;
+            border: 1px solid var(--border);
+                    overflow: hidden;
+            margin-bottom: 16px;
+
+        }
+
+                .fin-table-wrap:last-of-type {
+                margin-bottom: 0;
+            }
+
+            .fin-table-head {
+            background: var(--navy);
+            padding: 16px 24px;
+        }
+
+                .fin-table-head h4 {
+                color: #fff;
+                font-size: 14px;
+                font-weight: 500;
+                margin: 0;
+            }
+
+            .fin-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+                .fin-table td {
+                        padding: 12px 24px;
+                font-size: 14px;
+                        border-bottom: 1px solid var(--border);
+                        color: var(--text-mid);
+
+            }
+
+                .fin-table tr:last-child td {
+                border-bottom: none;
+            }
+
+                .fin-table td:last-child {
+                text-align: right;
+                font-weight: 500;
+                color: var(--text-dark);
+            }
+
+            .fin-total td {
+                    background: rgba(200,146,42,0.07) !important;
+                    font-weight: 600;
+            color: var(--text-dark) !important;
+
+        }
+
+                .fin-total td:last-child {
+                color: var(--gold) !important;
+            }
+
+            .projection-box {
+                    background: var(--navy);
+                    border-radius: 10px;
+            padding: 32px;
+                    display: flex;
+            flex-direction: column;
+            gap: 24px;
+
+        }
+
+            .proj-header {
+                    font-size: 11px;
+            text-transform: uppercase;
+                    letter-spacing: 1.5px;
+            color: rgba(255,255,255,0.45);
+            margin-bottom: 4px;
+
+        }
+
+            .proj-num {
+                    font-family: 'Playfair Display', serif;
+                    font-size: 34px;
+            color: var(--gold-light);
+            font-weight: 700;
+
+        }
+
+            .proj-label {
+            color: rgba(255,255,255,0.5);
+            font-size: 13px;
+        }
+
+            .proj-divider {
+            height: 1px;
+            background: rgba(200,146,42,0.2);
+        }
+
+            .proj-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+            .proj-metric-num {
+                    font-family: 'Playfair Display', serif;
+                    font-size: 22px;
+            font-weight: 700;
+            margin-top: 4px;
+
+        }
+
+            .proj-metric-primary {
+            color: var(--gold-light);
+        }
+
+            .proj-metric-secondary {
+            color: rgba(255,255,255,0.7);
+        }
+
+            .proj-note {
+                    font-size: 12px;
+            color: rgba(255,255,255,0.3);
+            line-height: 1.7;
+                    border-top: 1px solid rgba(255,255,255,0.07);
+            padding-top: 16px;
+
+        }
+
+
+        /* ── MARKETING ── */
+            .marketing-bg {
+            background: #fff;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+            .mkt-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 14px;
+        }
+
+            .mkt-card {
+                    border-radius: 8px;
+            padding: 22px 18px;
+                    border: 1px solid var(--border);
+                    transition: border-color 0.2s;
+
+        }
+
+                .mkt-card:hover {
+                border-color: var(--gold);
+            }
+
+            .mkt-icon {
+            font-size: 22px;
+            color: var(--gold);
+            margin-bottom: 12px;
+        }
+
+            .mkt-card h4 {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+            .mkt-card p {
+            font-size: 12px;
+            color: var(--text-mid);
+            line-height: 1.65;
+            margin: 0;
+        }
+
+
+        /* ── PARTNERS ── */
+            .partners-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+            .partner-card {
+                    border: 1px solid var(--border);
+                    border-radius: 10px;
+            padding: 24px 20px;
+                    display: flex;
+            flex-direction: column;
+            gap: 12px;
+                    transition: border-color 0.2s;
+
+        }
+
+                .partner-card:hover {
+                border-color: var(--gold);
+            }
+
+            .partner-initial {
+                    width: 46px;
+            height: 46px;
+                    background: var(--navy);
+            border-radius: 8px;
+                    display: flex;
+            align-items: center;
+            justify-content: center;
+                    font-family: 'Playfair Display', serif;
+                    color: var(--gold-light);
+            font-size: 18px;
+            font-weight: 700;
+
+        }
+
+            .partner-card h4 {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+            .partner-card p {
+            font-size: 13px;
+            color: var(--text-mid);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+
+        /* ── KEY TO SUCCESS ── */
+            .success-bg {
+            background: var(--navy);
+        }
+
+            .success-bg .section-title {
+            color: #fff;
+        }
+
+            .success-bg .section-tag {
+            color: var(--gold-light);
+        }
+
+            .success-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+            .success-item {
+                    background: rgba(255,255,255,0.04);
+                    border: 1px solid rgba(200,146,42,0.15);
+                    border-radius: 8px;
+            padding: 22px;
+                    display: flex;
+            align-items: flex-start;
+            gap: 16px;
+                    transition: background 0.2s;
+
+        }
+
+                .success-item:hover {
+                background: rgba(255,255,255,0.07);
+            }
+
+            .success-num {
+                    font-family: 'Playfair Display', serif;
+                    font-size: 24px;
+            color: var(--gold);
+                    font-weight: 700;
+            flex-shrink: 0;
+            line-height: 1;
+            padding-top: 2px;
+
+        }
+
+            .success-item h4 {
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 6px;
+        }
+
+            .success-item p {
+            font-size: 13px;
+            color: rgba(255,255,255,0.45);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+
+        /* ── RESPONSIVE ── */
+            @@media (max-width: 900px) {
+                    section
+
+        {
+            padding: 60px 20px;
+        }
+
+                .hero {
+            padding: 60px 20px;
+        }
+
+                .hero-grid, .two-col, .prog-grid, .swot-grid, .fin-grid {
+            grid-template-columns: 1fr;
+        }
+
+                .hero h1 {
+            font-size: 36px;
+        }
+
+                .values-grid, .mkt-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+
+                .market-grid, .partners-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+
+                .prog-list {
+            grid-template-columns: 1fr;
+        }
+
+                .success-grid {
+            grid-template-columns: 1fr;
+        }
+
+                .proj-metrics {
+            grid-template-columns: 1fr;
+        }
+
+
+        }</style>
+}
+
+<!-- HERO -->
+<div class="hero">
+    <div class="hero-grid">
+        <div>
+            <div class="hero-tag">Established 2022 &middot; North West Province</div>
+            <h1>Empowering Skills in <span>Mining &amp; Construction</span></h1>
+            <p>Providing professional, accredited training programs that equip individuals with the practical skills and safety knowledge required to operate heavy machinery safely and effectively.</p>
+            <div class="hero-btns">
+                <a href="#programmes" class="btn-primary-gold">Explore Programmes</a>
+                <a href="#mission" class="btn-outline-white">Our Mission</a>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <div class="stat-row">
+                <div class="stat-box">
+                    <div class="stat-num">250+</div>
+                    <div class="stat-label">Operators / Year</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-num">7</div>
+                    <div class="stat-label">Programmes</div>
+                </div>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="training-badge">
+                <div class="training-badge-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <div class="training-badge-text">
+                    <strong>Industry Standard Training</strong>
+                    <span>Classroom &middot; Practical &middot; Assessment &middot; Certification</span>
+                </div>
+            </div>
+            <div class="training-badge">
+                <div class="training-badge-icon" style="background: rgba(200,146,42,0.2);">
+                    <i class="bi bi-geo-alt" style="color: var(--gold-light);"></i>
+                </div>
+                <div class="training-badge-text">
+                    <strong style="font-weight: 400; color: rgba(255,255,255,0.7);">North West Province &rarr; National Expansion</strong>
+                    <span>5&ndash;10 year strategic roadmap</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- VISION & MISSION -->
+<section id="mission" class="mission-bg">
+    <div class="container-inner">
+        <div class="two-col">
+            <div>
+                <span class="section-tag">Who we are</span>
+                <h2 class="section-title">Vision &amp; Mission</h2>
+                <div class="mission-card" style="margin-top: 28px;">
+                    <h3>Vision</h3>
+                    <p>To become a leading construction and mining training provider in South Africa, recognized for developing skilled operators and promoting workplace safety.</p>
+                </div>
+                <div class="mission-card">
+                    <h3>Mission</h3>
+                    <p>To provide professional and accredited training programs that equip individuals with the practical skills and safety knowledge required to operate heavy machinery and construction equipment safely and effectively.</p>
+                </div>
+            </div>
+            <div>
+                <span class="section-tag">Strategic roadmap</span>
+                <h2 class="section-title">Goals &amp; Objectives</h2>
+                <div class="goals-grid">
+                    <div class="goal-box">
+                        <span class="goal-period">1&ndash;5 Years</span>
+                        <p>Establish as trusted provider in the North West Province. Build strong industry relationships and train 300+ operators per year.</p>
+                    </div>
+                    <div class="goal-box">
+                        <span class="goal-period">5&ndash;10 Years</span>
+                        <p>Become a nationally recognized training provider. Expand programmes, increase capacity, and establish additional training sites.</p>
+                    </div>
+                    <div class="goal-box" style="grid-column: span 2;">
+                        <span class="goal-period">Core Objectives</span>
+                        <p>Build long-term partnerships with industry leaders &middot; Develop a strong reputation for quality training &middot; Ensure operator competency and regulatory compliance.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- VALUES -->
+<section id="values">
+    <div class="container-inner">
+        <div class="section-header">
+            <span class="section-tag">What we stand for</span>
+            <h2 class="section-title">Core Values</h2>
+        </div>
+        <div class="values-grid">
+            <div class="value-card"><div class="value-num">1</div><h4>Integrity</h4><p>We conduct our training with honesty and professionalism in every interaction.</p></div>
+            <div class="value-card"><div class="value-num">2</div><h4>Excellence</h4><p>We strive to deliver the highest standard of training and assessment at all times.</p></div>
+            <div class="value-card"><div class="value-num">3</div><h4>Safety</h4><p>Safety is the foundation of every training programme we deliver to learners.</p></div>
+            <div class="value-card"><div class="value-num">4</div><h4>Empowerment</h4><p>We empower individuals with practical skills that improve employment opportunities.</p></div>
+            <div class="value-card"><div class="value-num">5</div><h4>Customer Focus</h4><p>We understand and prioritize the needs of our clients and learners above all.</p></div>
+            <div class="value-card"><div class="value-num">6</div><h4>Growth</h4><p>We continuously improve our training programmes and service delivery standards.</p></div>
+            <div class="value-card"><div class="value-num">7</div><h4>Accountability</h4><p>We take full responsibility for the quality and outcomes of our training.</p></div>
+            <div class="value-card"><div class="value-num">8</div><h4>Innovation</h4><p>We use modern training methods to improve learning outcomes and engagement.</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- PROGRAMMES -->
+<section id="programmes" class="programmes-bg">
+    <div class="container-inner">
+        <div class="section-header">
+            <span class="section-tag">What we offer</span>
+            <h2 class="section-title">Training Programmes</h2>
+            <p class="section-sub">Specialized heavy equipment operator training combining classroom theory, practical machine work, and formal competency assessments.</p>
+        </div>
+        <div class="prog-grid">
+            <div>
+                <div class="prog-includes">
+                    <h4>Programme structure</h4>
+                    <div class="prog-inc-row"><i class="bi bi-book"></i><span>Classroom theory training</span></div>
+                    <div class="prog-inc-row"><i class="bi bi-gear"></i><span>Practical machine training</span></div>
+                    <div class="prog-inc-row"><i class="bi bi-clipboard-check"></i><span>Competency assessments</span></div>
+                    <div class="prog-inc-row"><i class="bi bi-award"></i><span>Certification upon completion</span></div>
+                </div>
+            </div>
+            <div>
+                <div class="prog-list">
+                    <div class="prog-item"><div class="prog-dot"></div><span>Counterbalanced Lift Truck (Forklift)</span></div>
+                    <div class="prog-item"><div class="prog-dot"></div><span>Excavator Operator</span></div>
+                    <div class="prog-item"><div class="prog-dot"></div><span>Front End Loader Operator</span></div>
+                    <div class="prog-item"><div class="prog-dot"></div><span>Dump Truck Operator</span></div>
+                    <div class="prog-item"><div class="prog-dot"></div><span>Grader Operator</span></div>
+                    <div class="prog-item"><div class="prog-dot"></div><span>TLB Operator</span></div>
+                    <div class="prog-item"><div class="prog-dot"></div><span>Mobile Crane Operator</span></div>
+                    <div class="prog-item"><div class="prog-dot"></div><span>Health &amp; Safety Training</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TARGET MARKET -->
+<section id="market">
+    <div class="container-inner">
+        <div class="section-header">
+            <span class="section-tag">Who we serve</span>
+            <h2 class="section-title">Target Market</h2>
+            <p class="section-sub">Providing skilled operators for the construction, mining, transport, and infrastructure industries across South Africa.</p>
+        </div>
+        <div class="market-grid">
+            <div class="market-card">
+                <div class="market-icon"><i class="bi bi-buildings"></i></div>
+                <h4>Construction Companies</h4>
+                <p>Ensuring operators are trained, competent, and compliant with all safety regulations.</p>
+            </div>
+            <div class="market-card">
+                <div class="market-icon"><i class="bi bi-minecart-loaded"></i></div>
+                <h4>Mining Companies</h4>
+                <p>Supporting mining operations with certified heavy equipment operators ready for deployment.</p>
+            </div>
+            <div class="market-card">
+                <div class="market-icon"><i class="bi bi-truck"></i></div>
+                <h4>Plant Hire Companies</h4>
+                <p>Training operators across a wide range of equipment categories for hire fleets.</p>
+            </div>
+            <div class="market-card">
+                <div class="market-icon"><i class="bi bi-person-check"></i></div>
+                <h4>Individuals</h4>
+                <p>Empowering job seekers in the heavy equipment sector with marketable, certified skills.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- SWOT -->
+<section class="swot-bg">
+    <div class="container-inner">
+        <div class="section-header">
+            <span class="section-tag">Strategic analysis</span>
+            <h2 class="section-title">SWOT Analysis</h2>
+        </div>
+        <div class="swot-grid">
+            <div class="swot-card swot-s">
+                <span class="swot-label">Strengths</span>
+                <h3>Internal Advantages</h3>
+                <div class="swot-items">
+                    <div class="swot-item">Skilled and experienced trainers</div>
+                    <div class="swot-item">Strong industry demand for operator training</div>
+                    <div class="swot-item">Established industry connections and partnerships</div>
+                </div>
+            </div>
+            <div class="swot-card swot-w">
+                <span class="swot-label">Weaknesses</span>
+                <h3>Areas to Improve</h3>
+                <div class="swot-items">
+                    <div class="swot-item">Currently weak marketing strategy</div>
+                    <div class="swot-item">Lack of social networking structures</div>
+                </div>
+            </div>
+            <div class="swot-card swot-o">
+                <span class="swot-label">Opportunities</span>
+                <h3>Market Potential</h3>
+                <div class="swot-items">
+                    <div class="swot-item">Growth in construction and mining sectors</div>
+                    <div class="swot-item">Critical skills shortage in equipment operators</div>
+                </div>
+            </div>
+            <div class="swot-card swot-t">
+                <span class="swot-label">Threats</span>
+                <h3>External Challenges</h3>
+                <div class="swot-items">
+                    <div class="swot-item">Competitors in the North West region</div>
+                    <div class="swot-item">Industry strikes affecting training demand</div>
+                    <div class="swot-item">Rising operational costs and fuel prices</div>
+                    <div class="swot-item">Slow growth expected in the first year</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FINANCIALS -->
+<section id="financials">
+    <div class="container-inner">
+        <div class="section-header">
+            <span class="section-tag">Business financials</span>
+            <h2 class="section-title">Financial Overview</h2>
+        </div>
+        <div class="fin-grid">
+            <div>
+                <div class="fin-table-wrap">
+                    <div class="fin-table-head"><h4>Start-Up Costs</h4></div>
+                    <table class="fin-table">
+                        <tr><td>Salary</td><td>R150,000</td></tr>
+                        <tr><td>Phone calls</td><td>R5,000</td></tr>
+                        <tr><td>Laptop / stationery</td><td>R20,000</td></tr>
+                        <tr><td>Rent</td><td>R18,000</td></tr>
+                        <tr class="fin-total"><td>Total start-up cost</td><td>R193,000</td></tr>
+                    </table>
+                </div>
+                <div class="fin-table-wrap">
+                    <div class="fin-table-head"><h4>Monthly Running Costs</h4></div>
+                    <table class="fin-table">
+                        <tr><td>Salary</td><td>R150,000</td></tr>
+                        <tr><td>Rent</td><td>R18,000</td></tr>
+                        <tr><td>Phone calls</td><td>R5,000</td></tr>
+                        <tr><td>Stationery</td><td>R20,000</td></tr>
+                        <tr><td>Travel allowance</td><td>R10,000</td></tr>
+                        <tr><td>Marketing</td><td>R15,000</td></tr>
+                        <tr class="fin-total"><td>Total monthly cost</td><td>R218,000</td></tr>
+                    </table>
+                </div>
+            </div>
+            <div class="projection-box">
+                <div>
+                    <div class="proj-header">2026 Yearly Projection</div>
+                    <div class="proj-num">R14,340,000</div>
+                    <div class="proj-label">Total projected annual revenue</div>
+                </div>
+                <div class="proj-divider"></div>
+                <div class="proj-metrics">
+                    <div>
+                        <div class="proj-header">Net Income (YTD)</div>
+                        <div class="proj-metric-num proj-metric-primary">R6,825,000</div>
+                    </div>
+                    <div>
+                        <div class="proj-header">Monthly Net (avg)</div>
+                        <div class="proj-metric-num proj-metric-primary">R647,500</div>
+                    </div>
+                    <div>
+                        <div class="proj-header">Total Expenses (YTD)</div>
+                        <div class="proj-metric-num proj-metric-secondary">R4,590,000</div>
+                    </div>
+                    <div>
+                        <div class="proj-header">Tax Provision (YTD)</div>
+                        <div class="proj-metric-num proj-metric-secondary">R2,925,000</div>
+                    </div>
+                </div>
+                <div class="proj-note">Estimates based on 50 persons per day &times; R1,200 per person. January is a partial month; full revenue of R1,320,000/month runs Feb&ndash;Nov, with December adjusted for 35 training days.</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- MARKETING -->
+<section class="marketing-bg">
+    <div class="container-inner">
+        <div class="section-header">
+            <span class="section-tag">Go-to-market</span>
+            <h2 class="section-title">Marketing Strategy</h2>
+        </div>
+        <div class="mkt-grid">
+            <div class="mkt-card">
+                <div class="mkt-icon"><i class="bi bi-pencil-square"></i></div>
+                <h4>Content Marketing</h4>
+                <p>Capture target market attention and teach consumers why they should choose us over competitors.</p>
+            </div>
+            <div class="mkt-card">
+                <div class="mkt-icon"><i class="bi bi-phone"></i></div>
+                <h4>Social Media</h4>
+                <p>Boost brand visibility with targeted content, strategic ad campaigns, and active community management.</p>
+            </div>
+            <div class="mkt-card">
+                <div class="mkt-icon"><i class="bi bi-people"></i></div>
+                <h4>Influencer Partners</h4>

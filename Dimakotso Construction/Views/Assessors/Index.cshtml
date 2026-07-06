@@ -1,0 +1,126 @@
+﻿@model IEnumerable<Dimakotso_Construction.Models.Assessors>
+
+@{
+    ViewData["Title"] = "Assessors";
+}
+
+<div class="container mt-4">
+
+    
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm text-center p-3" style="background:#EEF4FF;">
+                <div class="text-primary fs-1 fw-bold">@Model.Count()</div>
+                <div class="text-muted">Total Assessors</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm text-center p-3" style="background:#EDFAF1;">
+                <div class="text-success fs-1 fw-bold">@Model.Count(a => a.Status == "Active")</div>
+                <div class="text-muted">Active</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm text-center p-3" style="background:#FFF8EC;">
+                <div class="text-warning fs-1 fw-bold">@Model.Count(a => a.Status == "Expiring Soon")</div>
+                <div class="text-muted">Expiring Soon</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm text-center p-3" style="background:#FFF0F0;">
+                <div class="text-danger fs-1 fw-bold">@Model.Count(a => a.Status == "Inactive")</div>
+                <div class="text-muted">Inactive</div>
+            </div>
+        </div>
+    </div>
+
+   
+    <div class="card shadow-sm border-0">
+        <div class="card-header d-flex justify-content-between align-items-center py-3"
+             style="background:#1a3a5c;">
+            <h5 class="mb-0 text-white">Assessors Register</h5>
+            <a asp-action="Create" class="btn btn-warning btn-sm fw-bold">
+                + Add Assessor
+            </a>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0">
+                <thead style="background:#f8f9fa;">
+                    <tr>
+                        <th class="ps-4">Assessor</th>
+                        <th>Contact</th>
+                        <th>Employee ID</th>
+                        <th>Department</th>
+                        <th>Status</th>
+                        <th>Qualifications</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="ps-4">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="rounded-circle text-white d-flex align-items-center
+                                                    justify-content-center fw-bold"
+                                         style="width:38px;height:38px;min-width:38px;
+                                                    background:#1a3a5c;font-size:13px;">
+                                        @item.FirstName[0]@item.LastName[0]
+                                    </div>
+                                    <div>
+                                        <div class="fw-semibold">@item.FirstName @item.LastName</div>
+                                        <small class="text-muted">Assessor</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="align-middle">
+                                <div><i class="bi bi-envelope me-1 text-muted"></i>@item.Contact</div>
+                            </td>
+                            <td class="align-middle">@item.EmployeeId</td>
+                            <td class="align-middle">@item.Department</td>
+                            <td class="align-middle">
+                                @{
+                                    var badgeClass = item.Status switch
+                                    {
+                                        "Active" => "bg-success",
+                                        "Inactive" => "bg-secondary",
+                                        "Expiring Soon" => "bg-warning text-dark",
+                                        _ => "bg-light text-dark"
+                                    };
+                                }
+                                <span class="badge @badgeClass px-3 py-2">@item.Status</span>
+                            </td>
+                            <td class="align-middle">
+                                <span class="badge bg-primary px-3 py-2">@item.qualifications</span>
+                            </td>
+                            <td class="align-middle text-center">
+                                <a asp-action="Edit" asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-outline-primary me-1" title="Edit">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                                <a asp-action="Details" asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-outline-secondary me-1" title="Details">
+                                    <i class="bi bi-file-text"></i>
+                                </a>
+                                <a asp-action="Delete" asp-route-id="@item.Id"
+                                   class="btn btn-sm btn-outline-danger" title="Delete">
+                                    <i class="bi bi-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer text-muted small">
+            Showing @Model.Count() assessor(s)
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
