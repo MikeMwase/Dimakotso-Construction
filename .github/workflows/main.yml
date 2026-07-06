@@ -42,38 +42,46 @@ jobs:
           dotnet-ef database update --verbose
 
       - name: Publish Project
-        run: |
-          dotnet publish "Dimakotso Construction/Dimakotso Construction.csproj" `
-            --configuration Release `
-            --no-build `
-            --output ./publish
+        run: dotnet publish "Dimakotso Construction/Dimakotso Construction.csproj" `
+          --configuration Release `
+          --no-build `
+          --output ./publish
 
       - name: Verify Publish Output
         shell: pwsh
         run: |
           Get-ChildItem ./publish -Recurse
 
+      - name: Verify MSDeploy Secrets
+        shell: pwsh
+        env:
+          SERVER: ${{ secrets.MSDEPLOY_SERVICE_URL }}
+          SITE: ${{ secrets.MSDEPLOY_SITE_NAME }}
+          USERNAME: ${{ secrets.MSDEPLOY_USERNAME }}
+        run: |
+          Write-Host "Server: '$env:SERVER'"
+          Write-Host "Site: '$env:SITE'"
+          Write-Host "Username exists: $([string]::IsNullOrWhiteSpace($env:USERNAME) -eq $false)"
+
       - name: Deploy to MonsterASP
         shell: pwsh
         env:
-          MSDEPLOY_SERVER: ${{ secrets.MSDEPLOY_SERVER }}
-          MSDEPLOY_SITE: ${{ secrets.MSDEPLOY_SITE }}
-          MSDEPLOY_USERNAME: ${{ secrets.MSDEPLOY_USERNAME }}
-          MSDEPLOY_PASSWORD: ${{ secrets.MSDEPLOY_PASSWORD }}
+          SERVER: ${{ secrets.MSDEPLOY_SERVICE_URL }}
+          SITE: ${{ secrets.MSDEPLOY_SITE_NAME }}
+          USERNAME: ${{ secrets.MSDEPLOY_USERNAME }}
+          PASSWORD: ${{ secrets.MSDEPLOY_PASSWORD }}
         run: |
           $msdeploy = "C:\Program Files\IIS\Microsoft Web Deploy V3\msdeploy.exe"
 
           if (!(Test-Path $msdeploy)) {
-            throw "msdeploy.exe not found at $msdeploy"
+              throw "msdeploy.exe not found."
           }
 
-          $source = "contentPath=$((Resolve-Path ./publish).Path)"
-          $dest = "contentPath=$env:MSDEPLOY_SITE,computerName=https://$env:MSDEPLOY_SERVER/msdeploy.axd?site=$env:MSDEPLOY_SITE,userName=$env:MSDEPLOY_USERNAME,password=$env:MSDEPLOY_PASSWORD,authType=Basic"
+          $publishPath = (Resolve-Path "./publish").Path
 
           & $msdeploy `
             -verb:sync `
-            "-source:$source" `
-            "-dest:$dest" `
-            -enableRule:AppOffline `
+            "-source:contentPath=$publishPath" `
+            "-dest:contentPath=$env:SITE,computerName=https://$env:SERVER/msdeploy.axd?site=$env:SITE,userName=$env:USERNAME,password=$env:PASSWORD,authType=Basic" `
             -allowUntrusted `
             -verbose
