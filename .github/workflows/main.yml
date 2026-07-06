@@ -19,12 +19,12 @@ jobs:
       - name: Build and Publish
         run: dotnet publish -c Release -o ./publish
 
-      # Run EF Migrations
+        # Step: Run Migrations
       - name: Run Entity Framework Migrations
         run: |
           dotnet tool install --global dotnet-ef
-          # The --project flag is mandatory and requires quotes for paths with spaces
-          dotnet ef database update --connection "${{ secrets.DB_CONNECTION_STRING }}" --project "Dimakotso Construction.csproj"
+          # Specify the exact path to the project file
+          dotnet ef database update --connection "${{ secrets.DB_CONNECTION_STRING }}" --project "Dimakotso Construction/Dimakotso Construction.csproj" --startup-project "Dimakotso Construction/Dimakotso Construction.csproj"
 
       # Deploy using the Publish Profile content
       - name: Deploy to MonsterASP
