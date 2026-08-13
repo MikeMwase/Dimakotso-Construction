@@ -5,14 +5,18 @@
 }
 
 <div class="container mt-4">
-    <div class="card shadow-sm border-0 border-danger">
-        <div class="card-header py-3 bg-danger">
-            <h4 class="mb-0 text-white">
-                <i class="bi bi-exclamation-triangle me-2"></i>Delete Assessor
-            </h4>
+    <!-- Delete.cshtml header -->
+    <div class="page-header-glossy header-danger d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div class="header-content">
+            <h2 class="fw-bold mb-0"><i class="bi bi-exclamation-triangle"></i> Delete Assessor</h2>
+            <div class="opacity-75 small mt-1">This action cannot be undone</div>
         </div>
-        <div class="card-body p-4">
-
+        <div class="header-actions">
+            <a asp-action="Index" class="btn btn-glossy-light"><i class="bi bi-arrow-left"></i> Back to List</a>
+        </div>
+    </div>
+    <div class="card shadow-sm border-0 border-danger">
+        <div class="card-body">
             <div class="alert alert-danger d-flex align-items-center gap-2 mb-4">
                 <i class="bi bi-exclamation-circle-fill fs-5"></i>
                 <span>Are you sure you want to permanently delete this assessor? This action cannot be undone.</span>
@@ -37,8 +41,8 @@
                     <i class="bi bi-envelope me-1 text-muted"></i>@Model.Contact
                 </dd>
 
-                <dt class="col-sm-3 text-muted">Employee ID</dt>
-                <dd class="col-sm-9">@Model.EmployeeId</dd>
+                <dt class="col-sm-3 text-muted">Assessor Number</dt>
+                <dd class="col-sm-9">@Model.AssessorNumber</dd>
 
                 <dt class="col-sm-3 text-muted">Department</dt>
                 <dd class="col-sm-9">@Model.Department</dd>

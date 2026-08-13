@@ -6,14 +6,15 @@
 }
 
 <div class="container py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4 border-bottom pb-3">
-        <div>
-            <span class="badge bg-secondary px-3 py-2 rounded-pill text-uppercase tracking-wider mb-2">Data Administration</span>
-            <h1 class="h3 fw-bold text-dark m-0">Edit Student Compliance Profile</h1>
-            <p class="text-muted small mb-0">Updating regulatory details for Tracking Reference: <span class="font-monospace fw-bold text-primary">@Model.RegistrationNumber</span></p>
+    <!-- Edit.cshtml header replacement -->
+    <div class="page-header-glossy header-blue d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div class="header-content">
+            <span class="header-badge badge px-3 py-2 rounded-pill text-uppercase small mb-2">Data Administration</span>
+            <h2 class="fw-bold mb-0">Edit Student Compliance Profile</h2>
+            <div class="opacity-75 small mt-1">Tracking Reference: <span class="font-monospace fw-bold">@Model.RegistrationNumber</span></div>
         </div>
-        <div>
-            <a asp-action="Index" class="btn btn-outline-secondary btn-sm fw-semibold d-flex align-items-center gap-1">
+        <div class="header-actions">
+            <a asp-action="Index" class="btn btn-glossy-light">
                 <i class="bi bi-arrow-left-circle-fill"></i> Back to List
             </a>
         </div>
@@ -29,23 +30,22 @@
         <div class="card-body p-4 bg-white">
             <form asp-action="Edit">
                 <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
-                <input type="hidden" asp-for="Id" />
 
                 <h6 class="text-primary fw-bold border-bottom pb-2 mb-3 text-uppercase small tracking-wider">System References</h6>
                 <div class="row g-3 mb-4">
                     <div class="col-md-4">
                         <label asp-for="RegistrationNumber" class="form-label fw-semibold small text-muted"></label>
-                        <input asp-for="RegistrationNumber" class="form-control font-monospace" readonly style="background-color: #f8f9fa;" />
+                        <input asp-for="RegistrationNumber" class="form-control font-monospace" placeholder="e.g. DC-2026-001" />
                         <span asp-validation-for="RegistrationNumber" class="text-danger small"></span>
                     </div>
-                    <div class="col-md-4">
-                        <label asp-for="SaqaId" class="form-label fw-semibold small text-muted">SAQA Qualification ID</label>
+                    @* <div class="col-md-4">
+                        <label asp-for="SaqaId" class="form-label fw-semibold small text-muted"></label>
                         <input asp-for="SaqaId" class="form-control font-monospace" />
                         <span asp-validation-for="SaqaId" class="text-danger small"></span>
-                    </div>
+                    </div> *@
                     <div class="col-md-4">
-                        <label asp-for="DateCreated" class="form-label fw-semibold small text-muted">Record Entry Date</label>
-                        <input asp-for="DateCreated" class="form-control" type="date" readonly style="background-color: #f8f9fa;" />
+                        <label asp-for="DateCreated" class="form-label fw-semibold small text-muted"></label>
+                        <input asp-for="DateCreated" class="form-control" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
                         <span asp-validation-for="DateCreated" class="text-danger small"></span>
                     </div>
                 </div>
@@ -53,40 +53,165 @@
                 <h6 class="text-primary fw-bold border-bottom pb-2 mb-3 text-uppercase small tracking-wider">Personal Identity Information</h6>
                 <div class="row g-3 mb-4">
                     <div class="col-md-4">
-                        <label asp-for="FirstNames" class="form-label fw-semibold small text-muted">First Name(s)</label>
+                        <label asp-for="FirstNames" class="form-label fw-semibold small text-muted"></label>
                         <input asp-for="FirstNames" class="form-control" />
                         <span asp-validation-for="FirstNames" class="text-danger small"></span>
                     </div>
                     <div class="col-md-4">
-                        <label asp-for="Surname" class="form-label fw-semibold small text-muted">Surname</label>
+                        <label asp-for="Surname" class="form-label fw-semibold small text-muted"></label>
                         <input asp-for="Surname" class="form-control" />
                         <span asp-validation-for="Surname" class="text-danger small"></span>
                     </div>
                     <div class="col-md-4">
-                        <label asp-for="IdentificationNumber" class="form-label fw-semibold small text-muted">National ID / Passport</label>
+                        <label asp-for="IdentificationNumber" class="form-label fw-semibold small text-muted"></label>
                         <input asp-for="IdentificationNumber" class="form-control font-monospace" />
                         <span asp-validation-for="IdentificationNumber" class="text-danger small"></span>
                     </div>
                 </div>
 
-                <h6 class="text-primary fw-bold border-bottom pb-2 mb-3 text-uppercase small tracking-wider">Academic Placement Profile</h6>
                 <div class="row g-3 mb-4">
-                    <div class="col-md-6">
-                        <label asp-for="TargetProgramTitle" class="form-label fw-semibold small text-muted">Registered Trade Occupational Program Title</label>
-                        <input asp-for="TargetProgramTitle" class="form-control" />
-                        <span asp-validation-for="TargetProgramTitle" class="text-danger small"></span>
+                    <div class="col-md-4">
+                        <label asp-for="DateOfBirth" class="form-label fw-semibold small text-muted"></label>
+                        <input asp-for="DateOfBirth" class="form-control" type="date" />
+                        <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
                     </div>
-                    <div class="col-md-6">
-                        <label asp-for="WorkplacePlacementId" class="form-label fw-semibold small text-muted">Assigned Workplace Host Employer</label>
-                        <select asp-for="WorkplacePlacementId" class="form-select" asp-items="ViewBag.WorkplacePlacementId"></select>
-                        <span asp-validation-for="WorkplacePlacementId" class="text-danger small"></span>
+                    <div class="col-md-4">
+                        <label asp-for="Gender" class="form-label fw-semibold small text-muted"></label>
+                        <select asp-for="Gender"
+                                class="form-select"
+                                asp-items="ViewBag.Gender">
+                        </select>
+                        <span asp-validation-for="Gender" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="Equity" class="form-label fw-semibold small text-muted"></label>
+                        <select asp-for="Equity"
+                                class="form-select"
+                                asp-items="ViewBag.Equity">
+                        </select>
+                        <span asp-validation-for="Equity" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <label asp-for="Citizenship" class="form-label fw-semibold small text-muted"></label>
+                        <select asp-for="Citizenship"
+                                class="form-select"
+                                asp-items="ViewBag.Citizenship">
+                        </select>
+                        <span asp-validation-for="Citizenship" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="DisabilityStatus" class="form-label fw-semibold small text-muted"></label>
+                        <select asp-for="DisabilityStatus"
+                                class="form-select"
+                                asp-items="ViewBag.DisabilityStatus">
+                        </select>
+                        <span asp-validation-for="DisabilityStatus" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="CurrentEmployment" class="form-label fw-semibold small text-muted"></label>
+                        <select asp-for="CurrentEmployment"
+                                class="form-select"
+                                asp-items="ViewBag.CurrentEmployment">
+                        </select>
+                        <span asp-validation-for="CurrentEmployment" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <h6 class="text-primary fw-bold border-bottom pb-2 mb-3 text-uppercase small tracking-wider">Contact & Communications</h6>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <label asp-for="Email" class="form-label fw-semibold small text-muted"></label>
+                        <input asp-for="Email" class="form-control" type="email" />
+                        <span asp-validation-for="Email" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="MobileNumber" class="form-label fw-semibold small text-muted"></label>
+                        <input asp-for="MobileNumber" class="form-control" />
+                        <span asp-validation-for="MobileNumber" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="PostalCode" class="form-label fw-semibold small text-muted"></label>
+                        <input asp-for="PostalCode" class="form-control" />
+                        <span asp-validation-for="PostalCode" class="text-danger small"></span>
                     </div>
                 </div>
 
                 <div class="mb-4">
-                    <label asp-for="Status" class="form-label fw-semibold small text-muted">Operational Enrollment Lifecycle Status</label>
-                    <select asp-for="Status" class="form-select fw-bold text-primary"></select>
-                    <span asp-validation-for="Status" class="text-danger small"></span>
+                    <label asp-for="HomeAddress" class="form-label fw-semibold small text-muted"></label>
+                    <input asp-for="HomeAddress" class="form-control" />
+                    <span asp-validation-for="HomeAddress" class="text-danger small"></span>
+                </div>
+
+                <h6 class="text-primary fw-bold border-bottom pb-2 mb-3 text-uppercase small tracking-wider">Academic Placement Profile</h6>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label asp-for="HighestQualification" class="form-label fw-semibold small text-muted"></label>
+                        <input asp-for="HighestQualification" class="form-control" />
+                        <span asp-validation-for="HighestQualification" class="text-danger small"></span>
+                    </div>
+                    @* <div class="col-md-6">
+                        <label asp-for="TargetProgramTitle" class="form-label fw-semibold small text-muted"></label>
+                        <input asp-for="TargetProgramTitle" class="form-control" />
+                        <span asp-validation-for="TargetProgramTitle" class="text-danger small"></span>
+                    </div> *@
+                </div>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label asp-for="EmployerId" class="form-label fw-semibold small text-muted"></label>
+                        <select asp-for="EmployerId"
+                                class="form-select"
+                                asp-items="ViewBag.EmployerId">
+                            <option value="">-- Select Host Employer --</option>
+                        </select>
+                        <span asp-validation-for="EmployerId" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Status" class="form-label fw-semibold small text-muted"></label>
+                        <select asp-for="Status"
+                                class="form-select"
+                                asp-items="ViewBag.Status">
+                        </select>
+                        <span asp-validation-for="Status" class="text-danger small"></span>
+                    </div>
+                </div>
+                <h6 class="text-primary fw-bold border-bottom pb-2 mb-3 text-uppercase small tracking-wider">Course Enrollment</h6>
+                <div class="card border-0 bg-light mb-4">
+                    <div class="card-body">
+                        @{
+                            var courses = (List<Dimakotso_Construction.Models.Course>)ViewBag.Courses;
+                            var selectedIds = (List<int>)ViewBag.SelectedCourseIds;
+                        }
+
+                        @if (!courses.Any())
+                        {
+                            <p class="text-muted mb-0">No active courses available.</p>
+                        }
+                        else
+                        {
+                            <div class="row g-2">
+                                @foreach (var course in courses)
+                                {
+                                    <div class="col-md-6">
+                                        <div class="form-check p-2 border rounded bg-white">
+                                            <input class="form-check-input" type="checkbox" name="selectedCourseIds"
+                                                   value="@course.Id" id="course_@course.Id"
+                                                   checked="@selectedIds.Contains(course.Id)" />
+                                            <label class="form-check-label w-100" for="course_@course.Id">
+                                                <span class="fw-semibold">@course.CourseName</span>
+                                                <span class="badge bg-secondary ms-1 font-monospace">@course.CourseCode</span>
+                                                <br />
+                                                <small class="text-muted">NQF @course.NQFLevel &middot; @course.Credits credits &middot; @course.DurationHours hrs</small>
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
                 </div>
 
                 <div class="bg-light p-3 rounded mb-4 border">
@@ -101,7 +226,7 @@
                 <div class="d-flex justify-content-end gap-2 border-top pt-3">
                     <a asp-action="Index" class="btn btn-light px-4 border">Cancel</a>
                     <button type="submit" class="btn btn-primary px-5 fw-semibold">
-                        <i class="bi bi-save-fill"></i> Save Dynamic Modifications
+                        <i class="bi bi-check-circle-fill"></i> Complete Enrollment
                     </button>
                 </div>
             </form>

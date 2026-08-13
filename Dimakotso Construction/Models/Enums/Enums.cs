@@ -42,12 +42,27 @@ namespace Dimakotso_Construction.Models.Enums
 
     public enum EnrollmentStatus
     {
-        Registered,
-        ActiveTraining,
-        FisaPreparation,
-        FisaCompleted,
-        EisaEligible,
-        Certified,
-        Withdrawn
+        [Description("Registered")] Registered,
+        [Description("Active Training")] ActiveTraining,
+        [Description("FISA Preparation")] FisaPreparation,
+        [Description("FISA Completed")] FisaCompleted,
+        [Description("EISA Eligible")] EisaEligible,
+        [Description("Certified")] Certified,
+        [Description("Withdrawn")] Withdrawn
+    }
+
+    public enum CertificateTrainingType
+    {
+        Novice,
+        Refresher,
+        ReCertification
+    }
+
+    public enum CertificateStatus
+    {
+        Active,
+        Expired,
+        Revoked,
+        Pending
     }
 }

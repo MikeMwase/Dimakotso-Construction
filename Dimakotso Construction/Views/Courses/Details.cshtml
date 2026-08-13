@@ -1,0 +1,90 @@
+﻿@model Dimakotso_Construction.Models.Course
+@using Dimakotso_Construction.Extensions
+
+@{
+    ViewData["Title"] = "Course Details";
+}
+
+<div class="page-header-glossy header-navy d-flex justify-content-between align-items-start flex-wrap gap-3">
+    <div class="header-content">
+        <span class="badge header-badge font-monospace mb-2">@Model.CourseCode</span>
+        <h2 class="fw-bold mb-0">@Model.CourseName</h2>
+    </div>
+    <div class="header-actions d-flex gap-2">
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-glossy-solid">
+            <i class="bi bi-pencil"></i> Edit
+        </a>
+        <a asp-action="Delete" asp-route-id="@Model?.Id" class="btn btn-glossy-light">
+            <i class="bi bi-trash"></i> Delete
+        </a>
+        <a asp-action="Index" class="btn btn-glossy-light">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-sm border-0 mb-4 detail-card">
+            <div class="card-body">
+                <h5 class="card-title fw-bold text-primary mb-3">
+                    <i class="bi bi-card-text"></i> Course Overview
+                </h5>
+                <p class="text-muted">
+                    @(string.IsNullOrWhiteSpace(Model.Description) ? "No description provided." : Model.Description)
+                </p>
+                <hr />
+                <h6 class="fw-bold"><i class="bi bi-flag text-gold"></i> Learning Objectives</h6>
+                <p class="text-muted">
+                    @(string.IsNullOrWhiteSpace(Model.LearningObjectives) ? "No learning objectives provided." : Model.LearningObjectives)
+                </p>
+                <h6 class="fw-bold mt-3"><i class="bi bi-signpost-split text-gold"></i> Prerequisites</h6>
+                <p class="text-muted">
+                    @(string.IsNullOrWhiteSpace(Model.Prerequisites) ? "None" : Model.Prerequisites)
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 detail-card">
+            <div class="card-body">
+                <h5 class="card-title fw-bold mb-3">
+                    <i class="bi bi-info-circle"></i> Specifications
+                </h5>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span class="text-muted"><i class="bi bi-upc-scan"></i> Code</span>
+                        <span class="fw-bold font-monospace">@Model.CourseCode</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span class="text-muted"><i class="bi bi-check-circle"></i> Status</span>
+                        <span class="badge @(Model.Status == CourseStatus.Active ? "bg-success" : "bg-secondary")">
+                            @Model.Status.GetDisplayName()
+                        </span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span class="text-muted"><i class="bi bi-tags"></i> Type</span>
+                        <span>@Model.Type.GetDisplayName()</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span class="text-muted"><i class="bi bi-clock"></i> Duration</span>
+                        <span>@Model.DurationHours hours</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span class="text-muted"><i class="bi bi-bar-chart"></i> NQF Level</span>
+                        <span>@Model.NQFLevel</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span class="text-muted"><i class="bi bi-award"></i> Credits</span>
+                        <span>@Model.Credits</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                        <span class="text-muted"><i class="bi bi-hash"></i> Unit Standard</span>
+                        <span>@(Model.UnitStandardNumber?.ToString() ?? "—")</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

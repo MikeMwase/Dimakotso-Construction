@@ -5,30 +5,66 @@
 }
 
 <div class="container mt-4">
-    <div class="card shadow-sm border-0">
-        <div class="card-header py-3" style="background:#1a3a5c;">
-            <h4 class="mb-0 text-white">
-                <i class="bi bi-person-badge me-2"></i>Add New Assessor
-            </h4>
+    <!-- Header -->
+    <div class="page-header-glossy header-blue d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div class="header-content">
+            <h2 class="fw-bold mb-0"><i class="bi bi-person-badge me-2"></i>Add New Assessor</h2>
         </div>
+        <div class="header-actions">
+            <a asp-action="Index" class="btn btn-glossy-light"><i class="bi bi-arrow-left me-1"></i> Back to List</a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm border-0 form-card">
         <div class="card-body p-4">
+            <form asp-action="Create" enctype="multipart/form-data">
+                @if (ViewBag.RequiresStudentSelection == true)
+                {
+                    <div class="alert alert-warning d-flex align-items-center gap-2">
+                        <i class="bi bi-info-circle-fill fs-5"></i>
+                        <div>
+                            @if (ViewBag.ErrorMessage != null)
+                            {
+                                @ViewBag.ErrorMessage
+                            }
+                            else
+                            {
+                                <text>To issue a certificate, please select a student from the <a asp-controller="StudentEnrollments" asp-action="Index" class="alert-link">Student Enrollments</a> list first.</text>
+                            }
+                        </div>
+                    </div>
+                }
+                else if (ViewBag.ErrorMessage != null)
+                {
+                    <div class="alert alert-warning d-flex align-items-center gap-2">
+                        <i class="bi bi-info-circle-fill fs-5"></i>
+                        <div>@ViewBag.ErrorMessage</div>
+                    </div>
+                }
+                @if (ViewBag.ErrorMessage != null)
+                {
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                        @ViewBag.ErrorMessage
+                    </div>
+                }
 
-            <form asp-action="Create">
-                <div asp-validation-summary="All" class="alert alert-danger d-none" id="valSummary"></div>
+                <div asp-validation-summary="All" class="text-danger"></div>
+                @* <div asp-validation-summary="All" class="alert alert-danger d-none" id="valSummary"></div> *@
 
-                <div class="row">
+                <div class="row g-3">
                     <div class="col-md-6">
-                        <div class="form-group mb-3">
+                        <div class="mb-3">
                             <label asp-for="FirstName" class="form-label fw-semibold"></label>
                             <input asp-for="FirstName" class="form-control" placeholder="e.g. Thabo" />
                             <span asp-validation-for="FirstName" class="text-danger small"></span>
                         </div>
-                        <div class="form-group mb-3">
-                            <label asp-for="EmployeeId" class="form-label fw-semibold"></label>
-                            <input asp-for="EmployeeId" class="form-control" placeholder="e.g. EMPASSR22-001_10" />
-                            <span asp-validation-for="EmployeeId" class="text-danger small"></span>
+                        <div class="mb-3">
+                            <label asp-for="AssessorNumber" class="form-label fw-semibold"></label>
+                            <input asp-for="AssessorNumber" class="form-control" placeholder="e.g. EMPASSR22-001_10" />
+                            <span asp-validation-for="AssessorNumber" class="text-danger small"></span>
                         </div>
-                        <div class="form-group mb-3">
+                        <div class="mb-3">
                             <label asp-for="Department" class="form-label fw-semibold"></label>
                             <select asp-for="Department" class="form-select">
                                 <option value="">-- Select Department --</option>
@@ -44,17 +80,17 @@
                     </div>
 
                     <div class="col-md-6">
-                        <div class="form-group mb-3">
+                        <div class="mb-3">
                             <label asp-for="LastName" class="form-label fw-semibold"></label>
                             <input asp-for="LastName" class="form-control" placeholder="e.g. Molefe" />
                             <span asp-validation-for="LastName" class="text-danger small"></span>
                         </div>
-                        <div class="form-group mb-3">
+                        <div class="mb-3">
                             <label asp-for="Contact" class="form-label fw-semibold"></label>
                             <input asp-for="Contact" class="form-control" placeholder="e.g. email or phone" />
                             <span asp-validation-for="Contact" class="text-danger small"></span>
                         </div>
-                        <div class="form-group mb-3">
+                        <div class="mb-3">
                             <label asp-for="Status" class="form-label fw-semibold"></label>
                             <select asp-for="Status" class="form-select">
                                 <option value="">-- Select Status --</option>
@@ -67,26 +103,148 @@
                     </div>
                 </div>
 
-                <div class="form-group mb-4">
-                    <label asp-for="qualifications" class="form-label fw-semibold">Qualifications</label>
-                    <input asp-for="qualifications" class="form-control"
-                           placeholder="e.g. 2 Active" />
-                    <span asp-validation-for="qualifications" class="text-danger small"></span>
-                    <div class="form-text text-muted">
-                        Summarise active qualifications, e.g. "3 Active" or "1 Active, 1 Expired"
+                <!-- Course Accreditation Section with Live Search Filter -->
+                <div class="mb-4 mt-2">
+                    <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                        <label class="form-label fw-semibold mb-0">
+                            <i class="bi bi-journal-check me-1 text-gold"></i> Courses This Assessor Can Assess
+                        </label>
+                        <div class="input-group input-group-sm" style="max-width: 340px;">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="bi bi-search text-muted"></i>
+                            </span>
+                            <input type="text" id="courseSearchInput" class="form-control border-start-0 ps-0"
+                                   placeholder="Filter by course code, title, NQF..." />
+                            <button class="btn btn-outline-secondary" type="button" id="clearCourseSearch" title="Clear filter">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="border rounded p-3 bg-light-subtle" style="max-height: 420px; overflow-y: auto;">
+                        @{
+                            var courses = (List<Dimakotso_Construction.Models.Course>)ViewBag.Courses;
+                            var selectedAccreditations = (Dictionary<int, string>)ViewBag.SelectedAccreditations;
+                        }
+
+                        @if (courses == null || !courses.Any())
+                        {
+                            <p class="text-muted mb-0">No active courses available.</p>
+                        }
+                        else
+                        {
+                            <div class="row g-2" id="courseListContainer">
+                                @foreach (var course in courses)
+                                {
+                                    var isChecked = selectedAccreditations.ContainsKey(course.Id);
+                                    var accValue = isChecked ? selectedAccreditations[course.Id] : "";
+
+                                    <div class="col-md-6 course-pick-col"
+                                         data-search="@course.CourseName.ToLower() @course.CourseCode.ToLower() nqf @course.NQFLevel @course.Credits credits">
+                                        <div class="border rounded p-2 h-100 course-pick-item bg-white shadow-sm">
+                                            <div class="form-check">
+                                                <input class="form-check-input course-checkbox" type="checkbox"
+                                                       name="selectedCourseIds" value="@course.Id"
+                                                       id="course_@course.Id"
+                                                       checked="@isChecked"
+                                                       data-target="#acc_@course.Id" />
+                                                <label class="form-check-label w-100" for="course_@course.Id">
+                                                    <span class="fw-semibold text-primary">@course.CourseName</span>
+                                                    <span class="badge bg-dark ms-1 font-monospace">@course.CourseCode</span>
+                                                    <br />
+                                                    <small class="text-muted">NQF @course.NQFLevel &middot; @course.Credits credits &middot; @course.DurationHours hrs</small>
+                                                </label>
+                                            </div>
+                                            <div class="mt-2">
+                                                <input type="text"
+                                                       name="accreditationNumbers[@course.Id]"
+                                                       id="acc_@course.Id"
+                                                       class="form-control form-control-sm"
+                                                       placeholder="Accreditation number"
+                                                       value="@accValue"
+                                                       disabled="@(!isChecked)" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <div id="noCoursesFound" class="text-center py-4 text-muted d-none">
+                                <i class="bi bi-search fs-3 d-block mb-1"></i>
+                                <span>No courses match your filter keywords.</span>
+                            </div>
+                        }
                     </div>
                 </div>
 
-                <div class="d-flex gap-2">
+                <!-- Qualifications Section -->
+                <datalist id="known-qualification-names">
+                    @if (ViewBag.KnownQualificationNames != null)
+                    {
+                        foreach (var name in (List<string>)ViewBag.KnownQualificationNames)
+                        {
+                            <option value="@name"></option>
+                        }
+                    }
+                </datalist>
+
+                <div class="mb-4">
+                    <label class="form-label fw-semibold mb-2">
+                        <i class="bi bi-file-earmark-medical me-1 text-gold"></i> Qualification Documents
+                    </label>
+
+                    <div id="qualification-rows"></div>
+
+                    <button type="button" id="add-qualification-row" class="btn btn-outline-primary btn-sm mt-2">
+                        <i class="bi bi-plus-circle me-1"></i> Add Qualification
+                    </button>
+                </div>
+
+                <template id="qualification-row-template">
+                    <div class="card mb-3 qualification-row border shadow-sm">
+                        <div class="card-body p-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="fw-bold mb-0 text-secondary">New Qualification Document</h6>
+                                <button type="button" class="btn btn-sm btn-outline-danger remove-qualification-row" title="Remove">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                            <div class="row g-2">
+                                <div class="col-md-6">
+                                    <label class="form-label small mb-1">Qualification Name</label>
+                                    <input type="text" class="form-control form-control-sm" data-field="QualificationName"
+                                           list="known-qualification-names" placeholder="e.g. Rigging Level 3" />
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label small mb-1">Issuing Body</label>
+                                    <input type="text" class="form-control form-control-sm" data-field="IssuingBody" placeholder="e.g. CETA" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small mb-1">Date Obtained</label>
+                                    <input type="date" class="form-control form-control-sm" data-field="DateObtained" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small mb-1">Expiry Date</label>
+                                    <input type="date" class="form-control form-control-sm" data-field="ExpiryDate" />
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label small mb-1">File (PDF/JPG/PNG)</label>
+                                    <input type="file" class="form-control form-control-sm" data-field="File" accept=".pdf,.jpg,.jpeg,.png" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <div class="d-flex gap-2 border-top pt-3">
                     <button type="submit" class="btn btn-primary px-4">
-                        <i class="bi bi-person-plus me-1"></i>Add Assessor
+                        <i class="bi bi-person-plus me-1"></i> Add Assessor
                     </button>
                     <a asp-action="Index" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-left me-1"></i>Back to List
+                        <i class="bi bi-arrow-left me-1"></i> Back to List
                     </a>
                 </div>
             </form>
-
         </div>
     </div>
 </div>
@@ -95,4 +253,117 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        var courseInfoMap = @Html.Raw(ViewBag.CourseInfoJson ?? "[]");
+
+        var courseSelect = document.getElementById('CourseId');
+        var titleInput = document.getElementById('CertificateTitle');
+        var levelInput = document.getElementById('CertificateLevel');
+
+        function populateFromCourse(courseId) {
+            var info = courseInfoMap.find(function (c) { return c.Id == courseId; });
+            if (!info) return;
+
+            if (titleInput) titleInput.value = info.CourseName;
+            if (levelInput) levelInput.value = 'NQF ' + info.NQFLevel;
+        }
+
+        if (courseSelect) {
+            courseSelect.addEventListener('change', function () {
+                populateFromCourse(this.value);
+            });
+
+            // If the student only has one enrolled course, auto-select and pre-fill immediately
+            if (courseInfoMap.length === 1) {
+                courseSelect.value = courseInfoMap[0].Id;
+                populateFromCourse(courseInfoMap[0].Id);
+            } else if (courseSelect.value) {
+                populateFromCourse(courseSelect.value);
+            }
+        }
+    </script>
+
+    <script>
+            // 1. Checkbox toggle <-> Accreditation input enabling
+            document.querySelectorAll('.course-checkbox').forEach(function (cb) {
+                cb.addEventListener('change', function () {
+                    var target = document.querySelector(this.dataset.target);
+                    if (target) {
+                        target.disabled = !this.checked;
+                        if (!this.checked) target.value = '';
+                    }
+                });
+            });
+
+            // 2. Real-time course filtering
+            var searchInput = document.getElementById('courseSearchInput');
+            var clearBtn = document.getElementById('clearCourseSearch');
+            var courseCols = document.querySelectorAll('.course-pick-col');
+            var noResultsMsg = document.getElementById('noCoursesFound');
+
+            function filterCourses() {
+                var query = searchInput.value.toLowerCase().trim();
+                var visibleCount = 0;
+
+                courseCols.forEach(function (col) {
+                    var searchData = col.getAttribute('data-search') || '';
+                    if (searchData.includes(query)) {
+                        col.classList.remove('d-none');
+                        visibleCount++;
+                    } else {
+                        col.classList.add('d-none');
+                    }
+                });
+
+                if (noResultsMsg) {
+                    if (visibleCount === 0 && courseCols.length > 0) {
+                        noResultsMsg.classList.remove('d-none');
+                    } else {
+                        noResultsMsg.classList.add('d-none');
+                    }
+                }
+            }
+
+            if (searchInput) {
+                searchInput.addEventListener('input', filterCourses);
+
+                if (clearBtn) {
+                    clearBtn.addEventListener('click', function () {
+                        searchInput.value = '';
+                        filterCourses();
+                        searchInput.focus();
+                    });
+                }
+            }
+
+            // 3. Dynamic Qualification Document Row Repeater
+                    // Qualification document repeater script in Create.cshtml
+        var qualContainer = document.getElementById('qualification-rows');
+        var qualTemplate = document.getElementById('qualification-row-template');
+        var addQualButton = document.getElementById('add-qualification-row');
+        var rowIndex = 0;
+
+        function addQualificationRow() {
+            var clone = qualTemplate.content.cloneNode(true);
+            var rowDiv = clone.querySelector('.qualification-row');
+
+            // Assign names matching the controller parameter name: qualificationUploads[index].PropertyName
+            rowDiv.querySelectorAll('[data-field]').forEach(function (input) {
+                var field = input.getAttribute('data-field');
+                input.setAttribute('name', 'qualificationUploads[' + rowIndex + '].' + field);
+            });
+
+            rowDiv.querySelector('.remove-qualification-row').addEventListener('click', function () {
+                rowDiv.remove();
+            });
+
+            qualContainer.appendChild(clone);
+            rowIndex++;
+        }
+
+        if (addQualButton) {
+            addQualButton.addEventListener('click', addQualificationRow);
+        }
+    </script>
 }

@@ -1,126 +1,203 @@
-﻿@model IEnumerable<Dimakotso_Construction.Models.Assessors>
+﻿@model Dimakotso_Construction.Models.AssessorIndexViewModel
 
 @{
     ViewData["Title"] = "Assessors";
 }
 
-<div class="container mt-4">
+<div class="page-header-glossy header-navy d-flex justify-content-between align-items-center flex-wrap gap-3">
+    <div class="header-content">
+        <h2 class="fw-bold mb-0"><i class="bi bi-person-badge"></i> Assessors Register</h2>
+        <div class="opacity-75 small mt-1">Manage assessor records and qualifications</div>
+    </div>
+    <div class="header-actions">
+        <a asp-action="Create" class="btn btn-glossy-solid">
+            <i class="bi bi-person-plus"></i> Add Assessor
+        </a>
+    </div>
+</div>
 
-    
-    <div class="row mb-4">
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm text-center p-3" style="background:#EEF4FF;">
-                <div class="text-primary fs-1 fw-bold">@Model.Count()</div>
-                <div class="text-muted">Total Assessors</div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm text-center p-3" style="background:#EDFAF1;">
-                <div class="text-success fs-1 fw-bold">@Model.Count(a => a.Status == "Active")</div>
-                <div class="text-muted">Active</div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm text-center p-3" style="background:#FFF8EC;">
-                <div class="text-warning fs-1 fw-bold">@Model.Count(a => a.Status == "Expiring Soon")</div>
-                <div class="text-muted">Expiring Soon</div>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="card border-0 shadow-sm text-center p-3" style="background:#FFF0F0;">
-                <div class="text-danger fs-1 fw-bold">@Model.Count(a => a.Status == "Inactive")</div>
-                <div class="text-muted">Inactive</div>
-            </div>
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-tile tile-blue">
+            <i class="bi bi-people stat-icon"></i>
+            <div class="stat-label">Total Assessors</div>
+            <div class="stat-value">@Model.TotalAssessors</div>
         </div>
     </div>
-
-   
-    <div class="card shadow-sm border-0">
-        <div class="card-header d-flex justify-content-between align-items-center py-3"
-             style="background:#1a3a5c;">
-            <h5 class="mb-0 text-white">Assessors Register</h5>
-            <a asp-action="Create" class="btn btn-warning btn-sm fw-bold">
-                + Add Assessor
-            </a>
+    <div class="col-md-3">
+        <div class="stat-tile tile-green">
+            <i class="bi bi-check-circle stat-icon"></i>
+            <div class="stat-label">Active</div>
+            <div class="stat-value">@Model.ActiveCount</div>
         </div>
-        <div class="card-body p-0">
-            <table class="table table-hover mb-0">
-                <thead style="background:#f8f9fa;">
-                    <tr>
-                        <th class="ps-4">Assessor</th>
-                        <th>Contact</th>
-                        <th>Employee ID</th>
-                        <th>Department</th>
-                        <th>Status</th>
-                        <th>Qualifications</th>
-                        <th class="text-center">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td class="ps-4">
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="rounded-circle text-white d-flex align-items-center
-                                                    justify-content-center fw-bold"
-                                         style="width:38px;height:38px;min-width:38px;
-                                                    background:#1a3a5c;font-size:13px;">
-                                        @item.FirstName[0]@item.LastName[0]
-                                    </div>
-                                    <div>
-                                        <div class="fw-semibold">@item.FirstName @item.LastName</div>
-                                        <small class="text-muted">Assessor</small>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="align-middle">
-                                <div><i class="bi bi-envelope me-1 text-muted"></i>@item.Contact</div>
-                            </td>
-                            <td class="align-middle">@item.EmployeeId</td>
-                            <td class="align-middle">@item.Department</td>
-                            <td class="align-middle">
-                                @{
-                                    var badgeClass = item.Status switch
-                                    {
-                                        "Active" => "bg-success",
-                                        "Inactive" => "bg-secondary",
-                                        "Expiring Soon" => "bg-warning text-dark",
-                                        _ => "bg-light text-dark"
-                                    };
-                                }
-                                <span class="badge @badgeClass px-3 py-2">@item.Status</span>
-                            </td>
-                            <td class="align-middle">
-                                <span class="badge bg-primary px-3 py-2">@item.qualifications</span>
-                            </td>
-                            <td class="align-middle text-center">
-                                <a asp-action="Edit" asp-route-id="@item.Id"
-                                   class="btn btn-sm btn-outline-primary me-1" title="Edit">
-                                    <i class="bi bi-pencil"></i>
-                                </a>
-                                <a asp-action="Details" asp-route-id="@item.Id"
-                                   class="btn btn-sm btn-outline-secondary me-1" title="Details">
-                                    <i class="bi bi-file-text"></i>
-                                </a>
-                                <a asp-action="Delete" asp-route-id="@item.Id"
-                                   class="btn btn-sm btn-outline-danger" title="Delete">
-                                    <i class="bi bi-trash"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-tile tile-orange">
+            <i class="bi bi-exclamation-circle stat-icon"></i>
+            <div class="stat-label">Expiring Soon</div>
+            <div class="stat-value">@Model.ExpiringCount</div>
         </div>
-        <div class="card-footer text-muted small">
-            Showing @Model.Count() assessor(s)
+    </div>
+    <div class="col-md-3">
+        <div class="stat-tile tile-red">
+            <i class="bi bi-x-circle stat-icon"></i>
+            <div class="stat-label">Inactive</div>
+            <div class="stat-value">@Model.InactiveCount</div>
         </div>
     </div>
 </div>
 
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+<div class="search-bar-card">
+    <form asp-action="Index" method="get" class="row g-2 align-items-center">
+        <div class="col-md-5">
+            <input type="text" name="searchTerm" class="form-control search-input-pill"
+                   placeholder="Search by name or assessor number..." value="@Model.SearchTerm" />
+        </div>
+        <div class="col-md-3">
+            <select name="department" class="form-select search-input-pill">
+                <option value="">All Departments</option>
+                @foreach (var dept in Model.Departments)
+                {
+                    <option value="@dept" selected="@(dept == Model.Department)">@dept</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="status" class="form-select search-input-pill">
+                <option value="">All Statuses</option>
+                <option value="Active" selected="@(Model.Status == "Active")">Active</option>
+                <option value="Expiring Soon" selected="@(Model.Status == "Expiring Soon")">Expiring Soon</option>
+                <option value="Inactive" selected="@(Model.Status == "Inactive")">Inactive</option>
+            </select>
+        </div>
+        <div class="col-md-2 d-flex gap-2">
+            <button type="submit" class="btn btn-primary btn-pill flex-grow-1">Search</button>
+            <a asp-action="Index" class="btn btn-outline-secondary btn-pill">Clear</a>
+        </div>
+    </form>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="list-header-card">
+        <h5><i class="bi bi-journal-bookmark"></i> Assessors Register</h5>
+        <span class="text-muted">
+            Showing @Model.Assessors.Count() of @Model.TotalFilteredAssessors assessor(s)
+            (Page @Model.PageIndex of @Math.Max(Model.TotalPages, 1))
+        </span>
+    </div>
+    <div class="card-body p-0">
+        <table class="table table-hover mb-0">
+            <thead style="background:#f8f9fa;">
+                <tr>
+                    <th class="ps-4">Assessor</th>
+                    <th>Contact</th>
+                    <th>Assessor Number</th>
+                    <th>Department</th>
+                    <th>Status</th>
+                    <th>Qualifications</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Assessors)
+                {
+                    <tr>
+                        <td class="ps-4">
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="rounded-circle text-white d-flex align-items-center justify-content-center fw-bold avatar-navy">
+                                    @item.FirstName[0]@item.LastName[0]
+                                </div>
+                                <div>
+                                    <div class="fw-semibold">@item.FirstName @item.LastName</div>
+                                    <small class="text-muted">Assessor</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="align-middle">
+                            <i class="bi bi-envelope me-1 text-muted"></i>@item.Contact
+                        </td>
+                        <td class="align-middle">@item.AssessorNumber</td>
+                        <td class="align-middle">@item.Department</td>
+                        <td class="align-middle">
+                            @{
+                                var badgeClass = item.Status switch
+                                {
+                                    "Active" => "bg-success",
+                                    "Inactive" => "bg-secondary",
+                                    "Expiring Soon" => "bg-warning text-dark",
+                                    _ => "bg-light text-dark"
+                                };
+                            }
+                            <span class="badge @badgeClass px-3 py-2">@item.Status</span>
+                        </td>
+                        <td class="align-middle">
+                            <span class="badge bg-primary px-3 py-2">@item.qualifications</span>
+                        </td>
+                        <td class="align-middle text-center">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary me-1" title="Edit">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary me-1" title="Details">
+                                <i class="bi bi-file-text"></i>
+                            </a>
+                            <a asp-action="Qualifications" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary" title="Qualification Documents">
+                                <i class="bi bi-file-earmark-medical"></i>
+                            </a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-outline-danger" title="Delete">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        @if (!Model.Assessors.Any())
+        {
+            <div class="text-center text-muted py-5">
+                <i class="bi bi-inbox fs-1"></i>
+                <p class="mt-2">No assessors found matching your filters.</p>
+            </div>
+        }
+    </div>
+
+    @if (Model.TotalPages > 1)
+    {
+        <div class="card-footer bg-white">
+            <nav class="d-flex justify-content-center">
+                <ul class="pagination mb-0">
+                    <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index"
+                           asp-route-page="@(Model.PageIndex - 1)"
+                           asp-route-searchTerm="@Model.SearchTerm"
+                           asp-route-department="@Model.Department"
+                           asp-route-status="@Model.Status">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                            <a class="page-link" asp-action="Index"
+                               asp-route-page="@i"
+                               asp-route-searchTerm="@Model.SearchTerm"
+                               asp-route-department="@Model.Department"
+                               asp-route-status="@Model.Status">@i</a>
+                        </li>
+                    }
+
+                    <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index"
+                           asp-route-page="@(Model.PageIndex + 1)"
+                           asp-route-searchTerm="@Model.SearchTerm"
+                           asp-route-department="@Model.Department"
+                           asp-route-status="@Model.Status">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     }
-}
+</div>

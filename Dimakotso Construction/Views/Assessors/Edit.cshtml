@@ -5,10 +5,17 @@
 }
 
 <div class="container mt-4">
-    <div class="card shadow-sm">
-        <div class="card-header bg-primary text-white">
-            <h4 class="mb-0">Edit Assessor Details</h4>
+    <!-- Edit.cshtml header -->
+    <div class="page-header-glossy header-blue d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div class="header-content">
+            <h2 class="fw-bold mb-0"><i class="bi bi-pencil-square"></i> Edit Assessor</h2>
+            <div class="opacity-75 small mt-1">@Model.FirstName @Model.LastName</div>
         </div>
+        <div class="header-actions">
+            <a asp-action="Index" class="btn btn-glossy-light"><i class="bi bi-arrow-left"></i> Back to List</a>
+        </div>
+    </div>
+    <div class="card shadow-sm">
         <div class="card-body">
             <form asp-action="Edit">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -27,7 +34,7 @@
                             <span asp-validation-for="LastName" class="text-danger"></span>
                         </div>
                         <div class="form-group mb-3">
-                            <label asp-for="Contact" class="form-label"></label>
+                            <label asp-for="Contact" class="form-label fw-bold"></label>
                             <input asp-for="Contact" class="form-control" />
                             <span asp-validation-for="Contact" class="text-danger"></span>
                         </div>
@@ -35,17 +42,17 @@
 
                     <div class="col-md-6">
                         <div class="form-group mb-3">
-                            <label asp-for="EmployeeId" class="form-label"></label>
-                            <input asp-for="EmployeeId" class="form-control" />
-                            <span asp-validation-for="EmployeeId" class="text-danger"></span>
+                            <label asp-for="AssessorNumber" class="form-label fw-bold"></label>
+                            <input asp-for="AssessorNumber" class="form-control" />
+                            <span asp-validation-for="AssessorNumber" class="text-danger"></span>
                         </div>
                         <div class="form-group mb-3">
-                            <label asp-for="Department" class="form-label"></label>
+                            <label asp-for="Department" class="form-label fw-bold"></label>
                             <input asp-for="Department" class="form-control" />
                             <span asp-validation-for="Department" class="text-danger"></span>
                         </div>
                         <div class="form-group mb-3">
-                            <label asp-for="Status" class="form-label"></label>
+                            <label asp-for="Status" class="form-label fw-bold"></label>
                             <select asp-for="Status" class="form-select">
                                 <option value="Active">Active</option>
                                 <option value="Inactive">Inactive</option>
@@ -56,8 +63,84 @@
                     </div>
                 </div>
 
+                <div class="mb-4">
+                    <!-- Header with Live Search Filter -->
+                    <div class="d-flex justify-content-between align-items-center mb-2 flex-wrap gap-2">
+                        <label class="form-label fw-semibold mb-0">
+                            <i class="bi bi-journal-check me-1"></i> Courses This Assessor Can Assess
+                        </label>
+                        <div class="input-group input-group-sm" style="max-width: 320px;">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-search text-muted"></i>
+                            </span>
+                            <input type="text" id="courseSearchInput" class="form-control border-start-0 ps-0"
+                                   placeholder="Filter by course name or code..." />
+                            <button class="btn btn-outline-secondary" type="button" id="clearCourseSearch" title="Clear search">
+                                <i class="bi bi-x-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Scrollable Course Container -->
+                    <div class="border rounded p-3 bg-light-subtle" style="max-height: 420px; overflow-y: auto;">
+                        @{
+                            var courses = (List<Dimakotso_Construction.Models.Course>)ViewBag.Courses;
+                            var selectedAccreditations = (Dictionary<int, string>)ViewBag.SelectedAccreditations;
+                        }
+
+                        @if (!courses.Any())
+                        {
+                            <p class="text-muted mb-0">No active courses available.</p>
+                        }
+                        else
+                        {
+                            <div class="row g-2" id="courseListContainer">
+                                @foreach (var course in courses)
+                                {
+                                    var isChecked = selectedAccreditations.ContainsKey(course.Id);
+                                    var accValue = isChecked ? selectedAccreditations[course.Id] : "";
+
+                                    <div class="col-md-6 course-pick-col" data-search="@course.CourseName.ToLower() @course.CourseCode.ToLower()">
+                                        <div class="border rounded p-2 h-100 course-pick-item bg-white shadow-sm">
+                                            <div class="form-check">
+                                                <input class="form-check-input course-checkbox" type="checkbox"
+                                                       name="selectedCourseIds" value="@course.Id"
+                                                       id="course_@course.Id"
+                                                       checked="@isChecked"
+                                                       data-target="#acc_@course.Id" />
+                                                <label class="form-check-label w-100" for="course_@course.Id">
+                                                    <span class="fw-semibold text-primary">@course.CourseName</span>
+                                                    <span class="badge bg-dark ms-1 font-monospace">@course.CourseCode</span>
+                                                    <br />
+                                                    <small class="text-muted">NQF @course.NQFLevel &middot; @course.Credits credits &middot; @course.DurationHours hrs</small>
+                                                </label>
+                                            </div>
+                                            <div class="mt-2">
+                                                <input type="text"
+                                                       name="accreditationNumbers[@course.Id]"
+                                                       id="acc_@course.Id"
+                                                       class="form-control form-control-sm"
+                                                       placeholder="Accreditation number"
+                                                       value="@accValue"
+                                                       disabled="@(!isChecked)" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- Empty State for Search Filter -->
+                            <div id="noCoursesFound" class="text-center py-4 text-muted d-none">
+                                <i class="bi bi-search fs-3 d-block mb-1"></i>
+                                <span>No courses match your filter criteria.</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+
                 <div class="form-group mb-3">
-                    <label asp-for="qualifications" class="form-label"></label>
+                    <label asp-for="qualifications" class="form-label fw-bold"></label>
                     <textarea asp-for="qualifications" class="form-control" rows="2"></textarea>
                     <span asp-validation-for="qualifications" class="text-danger"></span>
                 </div>
@@ -74,5 +157,15 @@
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+        <script>
+            document.querySelectorAll('.course-checkbox').forEach(function (cb) {
+                cb.addEventListener('change', function () {
+                    var target = document.querySelector(this.dataset.target);
+                    target.disabled = !this.checked;
+                    if (!this.checked) target.value = '';
+                });
+            });
+        </script>
     }
 }

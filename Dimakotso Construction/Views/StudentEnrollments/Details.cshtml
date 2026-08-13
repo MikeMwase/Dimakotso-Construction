@@ -61,10 +61,10 @@
                 <div class="card-header bg-dark text-white">Enrollment Status</div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-md-3">
+                        @* <div class="col-md-3">
                             <label class="text-muted small d-block">Program</label>
                             <strong>@Html.DisplayFor(m => m.TargetProgramTitle)</strong>
-                        </div>
+                        </div> *@
                         <div class="col-md-3">
                             <label class="text-muted small d-block">Status</label>
                             <span class="badge bg-info text-dark">@Html.DisplayFor(m => m.Status)</span>
@@ -75,7 +75,59 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div<!-- Add this card to Details.cshtml, after the Enrollment Status card -->
+<div class="col-12">
+    <div class="card shadow-sm border-0 detail-card">
+        <div class="card-header bg-primary text-white">
+            <i class="bi bi-journal-bookmark"></i> Enrolled Courses
+        </div>
+        <div class="card-body">
+            @if (!Model.StudentCourses.Any())
+            {
+                <p class="text-muted mb-0">Not enrolled in any courses yet.</p>
+            }
+            else
+            {
+                <table class="table table-sm mb-0">
+                    <thead>
+                        <tr>
+                            <th>Course</th>
+                            <th>Status</th>
+                            <th>Enrolment Date</th>
+                            <th>Final Mark</th>
+                            <th>Competent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var sc in Model.StudentCourses)
+                        {
+                            <tr>
+                                <td>
+                                    @sc.Course.CourseName
+                                    <span class="badge bg-secondary font-monospace ms-1">@sc.Course.CourseCode</span>
+                                </td>
+                                <td><span class="badge bg-info text-dark">@sc.Status</span></td>
+                                <td>@sc.EnrolmentDate.ToShortDateString()</td>
+                                <td>@(sc.FinalMark?.ToString("F1") ?? "—")</td>
+                                <td>
+                                    @if (sc.Competent)
+                                    {
+                                        <span class="badge bg-success">Yes</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">No</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+</div>
+
         </div>
     </div>
 </div>

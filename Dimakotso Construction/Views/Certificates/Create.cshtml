@@ -1,0 +1,462 @@
+﻿@model Dimakotso_Construction.Models.CertificateCreateViewModel
+
+@{
+    ViewData["Title"] = "Create Certificate";
+    var safeCourseJson = string.IsNullOrWhiteSpace(Model.CourseInfoJson) ? "[]" : Model.CourseInfoJson;
+}
+
+<div class="page-header-glossy header-blue d-flex justify-content-between align-items-center flex-wrap gap-3">
+    <div class="header-content">
+        <h2 class="fw-bold mb-0"><i class="bi bi-award me-2"></i>Add New Certificate</h2>
+        <div class="opacity-75 small mt-1">Issue a new learner certificate record</div>
+    </div>
+    <div class="header-actions">
+        <a asp-action="Index" class="btn btn-glossy-light">
+            <i class="bi bi-arrow-left me-1"></i> Back to List
+        </a>
+    </div>
+</div>
+
+@if (Model.ErrorMessage != null)
+{
+    <div class="alert alert-warning">
+        <i class="bi bi-info-circle-fill me-1"></i> @Model.ErrorMessage
+    </div>
+}
+
+<form asp-action="Create">
+    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+    <div class="card form-card mb-4">
+        <div class="card-body p-4">
+            <h5 class="fw-bold text-primary mb-3"><i class="bi bi-file-earmark-check me-2 text-gold"></i>Certificate Information</h5>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label asp-for="Certificate.CertificateNumber" class="form-label"></label>
+                    <input asp-for="Certificate.CertificateNumber" class="form-control" placeholder="Auto-generated if left blank" />
+                    <span asp-validation-for="Certificate.CertificateNumber" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Certificate.JobNumber" class="form-label"></label>
+                    <input asp-for="Certificate.JobNumber" class="form-control" placeholder="e.g. NTNW26-5342" />
+                    <span asp-validation-for="Certificate.JobNumber" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Certificate.CertificateCategory" class="form-label"></label>
+                    <input asp-for="Certificate.CertificateCategory" class="form-control" readonly placeholder="Auto-filled from selected course" />
+                    <span asp-validation-for="Certificate.CertificateCategory" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Certificate.Status" class="form-label"></label>
+                    <select asp-for="Certificate.Status" asp-items="Html.GetEnumSelectList<CertificateStatus>()" class="form-select"></select>
+                    <span asp-validation-for="Certificate.Status" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label asp-for="Certificate.CertificateLevel" class="form-label"></label>
+                    <input asp-for="Certificate.CertificateLevel" class="form-control" placeholder="e.g., NQF Level 3" />
+                    <span asp-validation-for="Certificate.CertificateLevel" class="text-danger"></span>
+                </div>
+                <div class="col-md-12">
+                    <label asp-for="Certificate.CertificateTitle" class="form-label"></label>
+                    <input asp-for="Certificate.CertificateTitle" class="form-control" />
+                    <span asp-validation-for="Certificate.CertificateTitle" class="text-danger"></span>
+                </div>
+                <div class="col-md-12">
+                    <label asp-for="Certificate.CertificateDescription" class="form-label"></label>
+                    <textarea asp-for="Certificate.CertificateDescription" class="form-control" rows="2"></textarea>
+                    <span asp-validation-for="Certificate.CertificateDescription" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (!Model.RequiresStudentSelection)
+    {
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-light">
+                <i class="bi bi-person-badge me-1 text-primary"></i>
+                <strong>Learner Information</strong>
+                <span class="text-muted small ms-2">(from enrollment record — read-only)</span>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label small text-muted mb-1">Full Name</label>
+                        <input type="text" class="form-control"
+                               value="@Model.LearnerFirstName @Model.LearnerMiddleNames @Model.LearnerSurname" readonly />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small text-muted mb-1">Email</label>
+                        <input type="text" class="form-control" value="@Model.LearnerEmail" readonly />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small text-muted mb-1">Phone</label>
+                        <input type="text" class="form-control" value="@Model.LearnerMobileNumber" readonly />
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label small text-muted mb-1">Address</label>
+                        <input type="text" class="form-control" value="@Model.LearnerHomeAddress" readonly />
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted mb-1">City</label>
+                        <input type="text" class="form-control" value="@Model.LearnerCity" readonly />
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small text-muted mb-1">Postal Code</label>
+                        <input type="text" class="form-control" value="@Model.LearnerPostalCode" readonly />
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small text-muted mb-1">ID / Passport</label>
+                        <input type="text" class="form-control" value="@Model.LearnerIdentificationNumber" readonly />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (Model.HasEmployer)
+    {
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-light">
+                <i class="bi bi-building me-1 text-primary"></i>
+                <strong>Employer Information</strong>
+                <span class="text-muted small ms-2">(from learner's employer record — read-only)</span>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label small text-muted mb-1">Company Name</label>
+                        <input type="text" class="form-control" value="@Model.EmployerCompanyName" readonly />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small text-muted mb-1">Contact Person</label>
+                        <input type="text" class="form-control" value="@Model.EmployerContactPerson" readonly />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small text-muted mb-1">Contact Email</label>
+                        <input type="text" class="form-control" value="@Model.EmployerContactEmail" readonly />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small text-muted mb-1">Contact Phone</label>
+                        <input type="text" class="form-control" value="@Model.EmployerContactPhone" readonly />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small text-muted mb-1">City</label>
+                        <input type="text" class="form-control" value="@Model.EmployerCity" readonly />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label small text-muted mb-1">Province</label>
+                        <input type="text" class="form-control" value="@Model.EmployerProvince" readonly />
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else if (!Model.RequiresStudentSelection)
+    {
+        <div class="alert alert-light border d-flex align-items-center gap-2 mb-4">
+            <i class="bi bi-info-circle text-muted"></i>
+            <span class="text-muted">No employer assigned to this learner.</span>
+        </div>
+    }
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-light">
+            <i class="bi bi-journal-bookmark me-1 text-primary"></i>
+            <strong>Course Information</strong>
+            <span class="text-muted small ms-2">(auto-filled from selected course)</span>
+        </div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label small text-muted mb-1">Course Name</label>
+                    <input type="text" id="courseInfoName" class="form-control" value="@Model.SelectedCourseName" readonly />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small text-muted mb-1">Course Code</label>
+                    <input type="text" id="courseInfoCode" class="form-control" value="@Model.SelectedCourseCode" readonly />
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label small text-muted mb-1">NQF Level</label>
+                    <input type="text" id="courseInfoNqf" class="form-control"
+                           value="@(Model.SelectedCourseNqfLevel.HasValue && Model.SelectedCourseNqfLevel > 0 ? "NQF Level " + Model.SelectedCourseNqfLevel : "N/A")" readonly />
+                </div>
+                <div class="col-md-12">
+                    <label class="form-label small text-muted mb-1">Course Description</label>
+                    <textarea id="courseInfoDescription" class="form-control" rows="2" readonly>@Model.SelectedCourseDescription</textarea>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label small text-muted mb-1">Credits</label>
+                    <input type="text" id="courseInfoCredits" class="form-control" value="@Model.SelectedCourseCredits" readonly />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label small text-muted mb-1">Duration (Hours)</label>
+                    <input type="text" id="courseInfoDuration" class="form-control" value="@Model.SelectedCourseDurationHours" readonly />
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label small text-muted mb-1">Unit Standard Number</label>
+                    <input type="text" id="courseInfoUnitStandard" class="form-control" value="@(Model.SelectedCourseUnitStandardNumber ?? "N/A")" readonly />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card form-card mb-4">
+        <div class="card-body p-4">
+            <h5 class="fw-bold text-primary mb-3"><i class="bi bi-person-check me-2 text-gold"></i>Assessor Allocation</h5>
+
+            <!-- Hidden inputs retained for model binding and JavaScript functionality -->
+            <div class="d-none">
+                @if (Model.RequiresStudentSelection)
+                {
+                    <select asp-for="Certificate.StudentEnrollmentId" asp-items="Model.Students"></select>
+                }
+                else
+                {
+                    <input type="hidden" asp-for="Certificate.StudentEnrollmentId" />
+                }
+                <select asp-for="Certificate.CourseId" asp-items="Model.Courses"></select>
+            </div>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label asp-for="Certificate.AssessorId" class="form-label">Accredited Assessor</label>
+                    <div class="input-group">
+                        <select asp-for="Certificate.AssessorId" class="form-select" asp-items="Model.Assessors" id="Certificate_AssessorId">
+                            <option value="">-- Select Assessor --</option>
+                        </select>
+                        <button type="button" class="btn btn-secondary" id="btnLoadAssessor">
+                            <i class="bi bi-arrow-clockwise"></i> Load
+                        </button>
+                    </div>
+                    <span asp-validation-for="Certificate.AssessorId" class="text-danger"></span>
+                    <div id="assessorContactInfo" class="form-text text-muted small mt-1"></div>
+
+                    <!-- Hidden field retained for model binding -->
+                    <input type="hidden" asp-for="Certificate.SelectedAssessorQualification" id="Certificate_SelectedAssessorQualification" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4 pb-4">
+        <button type="submit" class="btn btn-primary btn-save px-4 py-2">
+            <i class="bi bi-save me-1"></i> Save Certificate
+        </button>
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function () {
+            var courseInfoMap = @Html.Raw(safeCourseJson);
+
+            // Pure JS memory array to hold assessor data
+            var loadedAssessors = [];
+
+            function clearCourseFields() {
+                $('#Certificate_CertificateTitle').val('');
+                $('#Certificate_CertificateLevel').val('');
+                $('#Certificate_CertificateDescription').val('');
+                $('#courseInfoName').val('');
+                $('#courseInfoCode').val('');
+                $('#courseInfoNqf').val('');
+                $('#courseInfoDescription').val('');
+                $('#courseInfoCredits').val('');
+                $('#courseInfoDuration').val('');
+                $('#courseInfoUnitStandard').val('');
+            }
+
+            function applyCourseData(data) {
+                $('#Certificate_CertificateTitle').val(data.courseName || '');
+
+                if (data.nqfLevel && data.nqfLevel > 0) {
+                    $('#Certificate_CertificateLevel').val('NQF Level ' + data.nqfLevel);
+                } else {
+                    $('#Certificate_CertificateLevel').val('');
+                }
+
+                var desc = data.description;
+                if (!desc || desc.trim() === '') {
+                    desc = (data.courseCode || '') + ' – ' + (data.courseName || '');
+                    if (data.credits) {
+                        desc += ' (' + data.credits + ' credits)';
+                    }
+                }
+                $('#Certificate_CertificateDescription').val(desc);
+
+                if (data.certification) {
+                    $('#Certificate_CertificateCategory').val(data.certification);
+                }
+
+                $('#courseInfoName').val(data.courseName || '');
+                $('#courseInfoCode').val(data.courseCode || '');
+                $('#courseInfoNqf').val(data.nqfLevel && data.nqfLevel > 0 ? 'NQF Level ' + data.nqfLevel : 'N/A');
+                $('#courseInfoDescription').val(data.description || '');
+                $('#courseInfoCredits').val(data.credits || '');
+                $('#courseInfoDuration').val(data.durationHours || '');
+                $('#courseInfoUnitStandard').val(data.unitStandardNumber || 'N/A');
+            }
+
+            // Populates the fields instantly from the local JS array
+            function populateAssessorDetails() {
+                var assessorId = $('#Certificate_AssessorId').val();
+
+                if (!assessorId) {
+                    $('#Certificate_SelectedAssessorQualification').val('');
+                    return;
+                }
+
+                var assessor = loadedAssessors.find(function (a) { return a.id == assessorId; });
+
+                if (assessor) {
+                    $('#Certificate_SelectedAssessorQualification').val(assessor.qualification || '');
+                }
+            }
+
+            // Direct fetch fallback — used when an assessor isn't found in the local cache
+            function fetchAssessorDetailsDirect(assessorId, courseId, onComplete) {
+                $.getJSON('@Url.Action("GetAssessorDetails", "Certificates")', {
+                    assessorId: assessorId,
+                    courseId: courseId || ''
+                })
+                .done(function (data) {
+                    $('#Certificate_SelectedAssessorQualification').val(data.qualification || '');
+
+                    // Cache it so subsequent lookups are instant
+                    loadedAssessors.push({
+                        id: parseInt(assessorId, 10),
+                        qualification: data.qualification,
+                        assessorNumber: data.assessorNumber,
+                        department: data.department,
+                        contact: data.contact,
+                        accreditationNumber: data.accreditationNumber,
+                        certificationBody: data.certificationBody
+                    });
+                })
+                .fail(function (jqxhr, textStatus, error) {
+                    console.error("Failed to load assessor details:", textStatus, error);
+                    $('#Certificate_SelectedAssessorQualification').val('Error loading details');
+                    alert("Could not load assessor details. Please try again.");
+                })
+                .always(function () {
+                    if (onComplete) onComplete();
+                });
+            }
+
+            // 1. Learner Dropdown Change
+            $('#Certificate_StudentEnrollmentId').change(function () {
+                var studentId = $(this).val();
+                var courseSelect = $('#Certificate_CourseId');
+
+                courseSelect.empty().append('<option value="">-- Select Enrolled Course --</option>');
+                $('#Certificate_AssessorId').empty().append('<option value="">-- Select Assessor --</option>');
+
+                loadedAssessors = [];
+                populateAssessorDetails();
+                clearCourseFields();
+
+                if (studentId) {
+                    $.getJSON('@Url.Action("GetCoursesByStudent", "Certificates")', { studentEnrollmentId: studentId }, function (data) {
+                        $.each(data, function (i, item) {
+                            courseSelect.append($('<option>', {
+                                value: item.id,
+                                text: item.code + ' - ' + item.name
+                            }));
+                        });
+                    }).fail(function (jqxhr, textStatus, error) {
+                        console.error("Failed to load courses:", error);
+                    });
+                }
+            });
+
+            // 2. Course Dropdown Change
+            $('#Certificate_CourseId').change(function () {
+                var courseId = $(this).val();
+                var assessorSelect = $('#Certificate_AssessorId');
+
+                assessorSelect.empty().append('<option value="">-- Select Accredited Assessor --</option>');
+                $('#assessorContactInfo').text('').removeClass('text-danger');
+
+                loadedAssessors = [];
+                populateAssessorDetails();
+
+                if (courseId) {
+                    var courseData = courseInfoMap.find(function (c) { return c.id == courseId; });
+                    if (courseData) {
+                        applyCourseData(courseData);
+                    }
+
+                    $.getJSON('@Url.Action("GetAssessorsByCourse", "Certificates")', { courseId: courseId }, function (data) {
+                        loadedAssessors = data;
+
+                        $.each(data, function (i, item) {
+                            assessorSelect.append($('<option>', {
+                                value: item.id,
+                                text: item.name
+                            }));
+                        });
+
+                        if (data.length === 0) {
+                            $('#assessorContactInfo').text('No accredited assessors found for this course.').addClass('text-danger');
+                        }
+                    }).fail(function (jqxhr, textStatus, error) {
+                        console.error("Failed to load assessors:", error);
+                    });
+                } else {
+                    clearCourseFields();
+                }
+            });
+
+            // 3. Assessor Dropdown Change
+            $('#Certificate_AssessorId').change(function () {
+                populateAssessorDetails();
+            });
+
+            // 4. Manual button click to load Assessor details — with fallback to a direct fetch
+            $('#btnLoadAssessor').click(function (e) {
+                e.preventDefault();
+
+                var $btn = $(this);
+                var assessorId = $('#Certificate_AssessorId').val();
+                var courseId = $('#Certificate_CourseId').val();
+
+                if (!assessorId) {
+                    alert("Please select an assessor from the dropdown first.");
+                    return;
+                }
+
+                var cached = loadedAssessors.find(function (a) { return a.id == assessorId; });
+
+                if (cached) {
+                    populateAssessorDetails();
+                    return;
+                }
+
+                // Cache miss — fetch directly
+                $btn.prop('disabled', true).html('<i class="bi bi-arrow-repeat"></i> Loading...');
+
+                $('#Certificate_SelectedAssessorQualification').val('Loading...');
+
+                fetchAssessorDetailsDirect(assessorId, courseId, function () {
+                    $btn.prop('disabled', false).html('<i class="bi bi-arrow-clockwise"></i> Load');
+                });
+            });
+
+            // 5. Initial load fetch (Handles server pre-selected states seamlessly)
+            var initialCourseId = $('#Certificate_CourseId').val();
+            if (initialCourseId) {
+                $.getJSON('@Url.Action("GetAssessorsByCourse", "Certificates")', { courseId: initialCourseId }, function (data) {
+                    loadedAssessors = data;
+                    if ($('#Certificate_AssessorId').val()) {
+                        populateAssessorDetails();
+                    }
+                });
+            }
+        });
+    </script>
+}

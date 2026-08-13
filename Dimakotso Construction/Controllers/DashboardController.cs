@@ -32,7 +32,7 @@ namespace Dimakotso_Construction.Controllers
             ViewBag.PendingVerification = pendingVerification;
 
             var records = await _context.StudentEnrollments
-                .Include(s => s.WorkplacePlacement)
+                .Include(s => s.Employer)
                 .OrderByDescending(s => s.DateCreated)
                 .ToListAsync();
 

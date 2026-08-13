@@ -12,6 +12,11 @@ namespace Dimakotso_Construction
         {
             var builder = WebApplication.CreateBuilder(args);
 
+            // Avoid EventLog provider issues on shared hosting (no write permission there)
+            builder.Logging.ClearProviders();
+            builder.Logging.AddConsole();
+            builder.Logging.AddDebug();
+
             // 1. Database Context
             builder.Services.AddDbContext<AcademyDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -45,7 +50,7 @@ namespace Dimakotso_Construction
 
             var app = builder.Build();
 
-            // 5. Database Setup & Seeding
+            // 5.Database Setup & Seeding
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
@@ -72,8 +77,12 @@ namespace Dimakotso_Construction
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
+            else
+            {
+                app.UseDeveloperExceptionPage();
+            }
 
-            app.UseHttpsRedirection();
+                app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseRouting();
             app.UseAuthentication();

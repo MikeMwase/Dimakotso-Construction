@@ -4,41 +4,61 @@
     ViewData["Title"] = "Employer Details";
 }
 
-<h1>Employer Details</h1>
+<div class="page-header-glossy header-navy d-flex justify-content-between align-items-center flex-wrap gap-3">
+    <div class="header-content">
+        <h2 class="fw-bold mb-0">@Model.CompanyName</h2>
+        <div class="opacity-75 small mt-1">@Model.Sector &middot; @Model.City, @Model.Province</div>
+    </div>
+    <div class="header-actions d-flex gap-2">
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-glossy-solid">
+            <i class="bi bi-pencil"></i> Edit
+        </a>
+        <a asp-action="Delete" asp-route-id="@Model?.Id" class="btn btn-glossy-light">
+            <i class="bi bi-trash"></i> Delete
+        </a>
+        <a asp-action="Index" class="btn btn-glossy-light">
+            <i class="bi bi-arrow-left"></i> Back to List
+        </a>
+    </div>
+</div>
 
-<div class="card shadow-sm mt-3">
+<div class="card shadow-sm border-0 detail-card">
     <div class="card-body">
         <dl class="row">
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.CompanyName)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.CompanyName)</dd>
+            <dt class="col-sm-3 text-muted"><i class="bi bi-person"></i> @Html.DisplayNameFor(m => m.ContactPerson)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(m => m.ContactPerson)</dd>
 
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ContactPerson)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.ContactPerson)</dd>
+            <dt class="col-sm-3 text-muted"><i class="bi bi-envelope"></i> @Html.DisplayNameFor(m => m.ContactEmail)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(m => m.ContactEmail)</dd>
 
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ContactEmail)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.ContactEmail)</dd>
+            <dt class="col-sm-3 text-muted"><i class="bi bi-telephone"></i> @Html.DisplayNameFor(m => m.ContactPhone)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(m => m.ContactPhone)</dd>
 
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.ContactPhone)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.ContactPhone)</dd>
+            <dt class="col-sm-3 text-muted"><i class="bi bi-briefcase"></i> @Html.DisplayNameFor(m => m.Sector)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(m => m.Sector)</dd>
 
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Sector)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.Sector)</dd>
+            <dt class="col-sm-3 text-muted"><i class="bi bi-building"></i> @Html.DisplayNameFor(m => m.Size)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(m => m.Size)</dd>
 
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Size)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.Size)</dd>
+            <dt class="col-sm-3 text-muted"><i class="bi bi-geo-alt"></i> @Html.DisplayNameFor(m => m.City)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(m => m.City)</dd>
 
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.City)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.City)</dd>
+            <dt class="col-sm-3 text-muted"><i class="bi bi-map"></i> @Html.DisplayNameFor(m => m.Province)</dt>
+            <dd class="col-sm-9">@Html.DisplayFor(m => m.Province)</dd>
 
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Province)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.Province)</dd>
-
-            <dt class="col-sm-3">@Html.DisplayNameFor(model => model.Status)</dt>
-            <dd class="col-sm-9">@Html.DisplayFor(model => model.Status)</dd>
+            <dt class="col-sm-3 text-muted"><i class="bi bi-check-circle"></i> @Html.DisplayNameFor(m => m.Status)</dt>
+            <dd class="col-sm-9">
+                @{
+                    var badgeClass = Model.Status switch
+                    {
+                        "Active" => "bg-success",
+                        "InActive" => "bg-secondary",
+                        "Pending" => "bg-warning text-dark",
+                        _ => "bg-light text-dark"
+                    };
+                }
+                <span class="badge @badgeClass px-3 py-2">@Model.Status</span>
+            </dd>
         </dl>
-    </div>
-    <div class="card-footer">
-        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning">Edit</a>
-        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
     </div>
 </div>

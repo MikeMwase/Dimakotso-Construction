@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>Dimakotso_Construction</RootNamespace>
+    <UserSecretsId>2210bf02-515f-4c32-817a-040a82fef510</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

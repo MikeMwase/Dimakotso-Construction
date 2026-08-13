@@ -1,0 +1,137 @@
+﻿@model Dimakotso_Construction.Models.CourseIndexViewModel
+
+@{
+    ViewData["Title"] = "Course Management";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="page-title"><i class="bi bi-mortarboard"></i> Course Management</h1>
+    <a asp-action="Create" class="btn btn-primary btn-pill">
+        <i class="bi bi-plus-circle"></i> Add Course
+    </a>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="stat-tile tile-blue">
+            <i class="bi bi-mortarboard stat-icon"></i>
+            <div class="stat-label">Total Courses</div>
+            <div class="stat-value">@Model.TotalCourses</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-tile tile-green">
+            <i class="bi bi-check-circle stat-icon"></i>
+            <div class="stat-label">Active Courses</div>
+            <div class="stat-value">@Model.ActiveCourses</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-tile tile-orange">
+            <i class="bi bi-people stat-icon"></i>
+            <div class="stat-label">Total Enrolled</div>
+            <div class="stat-value">@Model.TotalEnrolled</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-tile tile-purple">
+            <i class="bi bi-clock stat-icon"></i>
+            <div class="stat-label">Total Hours</div>
+            <div class="stat-value">@Model.TotalHours</div>
+        </div>
+    </div>
+</div>
+
+<div class="search-bar-card">
+    <form asp-action="Index" method="get" class="d-flex gap-2">
+        <input type="text" name="searchTerm" class="form-control search-input-pill flex-grow-1"
+               placeholder="Search by course name or code..." value="@Model.SearchTerm" />
+        <button type="submit" class="btn btn-primary btn-pill">Search</button>
+        <a asp-action="Index" class="btn btn-outline-secondary btn-pill">Clear</a>
+    </form>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="list-header-card">
+        <h5><i class="bi bi-journal-bookmark"></i> Course List</h5>
+        <span class="text-muted">
+            Showing @Model.Courses.Count() of @Model.TotalFilteredCourses courses
+            (Page @Model.PageIndex of @Math.Max(Model.TotalPages, 1))
+        </span>
+    </div>
+    <div class="card-body">
+        <div class="row g-3">
+            @foreach (var item in Model.Courses)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100 shadow-sm border-0">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="badge bg-success">@item.Status</span>
+                                <small class="text-muted font-monospace">@item.CourseCode</small>
+                            </div>
+                            <h5 class="card-title fw-bold text-primary">@item.CourseName</h5>
+                            <p class="card-text small text-muted" title="@item.Description">
+                                @(item.Description?.Length > 100 ? item.Description.Substring(0, 97) + "..." : item.Description)
+                            </p>
+
+                            <div class="small mb-2">
+                                <strong>NQF:</strong> @item.NQFLevel | <strong>Credits:</strong> @item.Credits | <strong>US#:</strong> @item.UnitStandardNumber
+                            </div>
+
+                            <hr />
+                            <div class="d-flex justify-content-between align-items-center">
+                                <small class="text-muted"><i class="bi bi-clock"></i> @item.DurationHours hrs</small>
+                                <div class="btn-group btn-group-sm">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info" title="Details"><i class="bi bi-eye"></i></a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        @if (!Model.Courses.Any())
+        {
+            <div class="text-center text-muted py-5">
+                <i class="bi bi-inbox fs-1"></i>
+                <p class="mt-2">No courses found@(string.IsNullOrWhiteSpace(Model.SearchTerm) ? "." : $" matching \"{Model.SearchTerm}\".")</p>
+            </div>
+        }
+
+        @if (Model.TotalPages > 1)
+        {
+            <nav class="d-flex justify-content-center mt-3">
+                <ul class="pagination">
+                    <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index"
+                           asp-route-page="@(Model.PageIndex - 1)"
+                           asp-route-searchTerm="@Model.SearchTerm">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                            <a class="page-link" asp-action="Index"
+                               asp-route-page="@i"
+                               asp-route-searchTerm="@Model.SearchTerm">@i</a>
+                        </li>
+                    }
+
+                    <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index"
+                           asp-route-page="@(Model.PageIndex + 1)"
+                           asp-route-searchTerm="@Model.SearchTerm">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        }
+    </div>
+</div>

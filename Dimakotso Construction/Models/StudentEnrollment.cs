@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Dimakotso_Construction.Models.Enums;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Dimakotso_Construction.Models.Enums;
 
 namespace Dimakotso_Construction.Models
 {
@@ -19,6 +20,8 @@ namespace Dimakotso_Construction.Models
         [Display(Name = "First Name(s)")]
         public string FirstNames { get; set; }
 
+        public string? MiddleNames { get; set; }
+
         [Required]
         [StringLength(100)]
         public string Surname { get; set; }
@@ -31,6 +34,7 @@ namespace Dimakotso_Construction.Models
 
         [Required]
         [DataType(DataType.Date)]
+        [Display(Name = "Date of Birth")]
         public DateTime DateOfBirth { get; set; }
 
         [Required]
@@ -44,9 +48,11 @@ namespace Dimakotso_Construction.Models
         public CitizenStatusCode Citizenship { get; set; }
 
         [Required]
+        [Display(Name = "Disability Status")]
         public DisabilityCode DisabilityStatus { get; set; }
 
         [Required]
+        [Display(Name = "Current Employment Status")]
         public EmploymentStatus CurrentEmployment { get; set; }
 
         [Required]
@@ -62,25 +68,32 @@ namespace Dimakotso_Construction.Models
         [Required]
         [Phone]
         [StringLength(15)]
+        [Display(Name = "Mobile Number")]
         public string MobileNumber { get; set; }
 
-        [Required]
+
+        [Display(Name = "Home Address")]
         public string HomeAddress { get; set; }
+
+        public string City { get; set; }
 
         [Required]
         [StringLength(10)]
+        [Display(Name = "Postal Code")]
         public string PostalCode { get; set; }
 
         // --- Academic Target Vectors ---
-        [Required]
-        [Display(Name = "Occupational Program Title")]
-        public string TargetProgramTitle { get; set; }
+        //[Required]
+        //[Display(Name = "Occupational Program Title")]
+        //public string TargetProgramTitle { get; set; }
 
-        [Required]
-        [Display(Name = "SAQA Qualification ID")]
-        public int SaqaId { get; set; }
+        //[Required]
+        //[Display(Name = "SAQA Qualification ID")]
+        //public int SaqaId { get; set; }
 
         public EnrollmentStatus Status { get; set; } = EnrollmentStatus.Registered;
+
+        [DataType(DataType.Date)]
         public DateTime DateCreated { get; set; } = DateTime.UtcNow;
 
         // --- POPIA Compliance Tracking ---
@@ -89,11 +102,22 @@ namespace Dimakotso_Construction.Models
         public bool HasConsentedToPopiaDataSharing { get; set; }
 
         // --- Relational Properties ---
-        public int? WorkplacePlacementId { get; set; }
-        [ForeignKey("WorkplacePlacementId")]
-        public virtual WorkplacePlacement WorkplacePlacement { get; set; }
+        [Display(Name = "Employer")]
+        public int? EmployerId { get; set; }
 
-        public virtual ComplianceDocument VerificationDocuments { get; set; }
+        [ForeignKey(nameof(EmployerId))]
+        [ValidateNever]
+        public virtual Employer? Employer { get; set; }
+
+        [ValidateNever]
+        public virtual ComplianceDocument? VerificationDocuments { get; set; }
+
+        // Many-to-Many relationship with Courses
+        [ValidateNever]
+        public virtual ICollection<StudentCourse> StudentCourses { get; set; } = new List<StudentCourse>();
+
+        [ValidateNever]
+        public virtual ICollection<Certificate> Certificates { get; set; } = new List<Certificate>();
     }
 
     public class WorkplacePlacement

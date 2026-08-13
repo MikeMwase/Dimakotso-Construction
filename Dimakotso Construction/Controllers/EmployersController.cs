@@ -20,9 +20,85 @@ namespace Dimakotso_Construction.Controllers
         }
 
         // GET: Employers
-        public async Task<IActionResult> Index()
+        // GET: Employers
+        public async Task<IActionResult> Index(string? searchTerm, string? sector, string? province, string? status, int page = 1)
         {
-            return View(await _context.Employers.ToListAsync());
+            const int pageSize = 3;
+
+            var allEmployers = _context.Employers.AsQueryable();
+            var totalEmployers = await allEmployers.CountAsync();
+            var activeCount = await allEmployers.CountAsync(e => e.Status == "Active");
+            var inactiveCount = await allEmployers.CountAsync(e => e.Status == "InActive");
+            var pendingCount = await allEmployers.CountAsync(e => e.Status == "Pending");
+
+            var query = _context.Employers.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchTerm))
+            {
+                query = query.Where(e =>
+                    e.CompanyName.Contains(searchTerm) ||
+                    (e.ContactPerson != null && e.ContactPerson.Contains(searchTerm)) ||
+                    (e.City != null && e.City.Contains(searchTerm)));
+            }
+
+            if (!string.IsNullOrWhiteSpace(sector))
+            {
+                query = query.Where(e => e.Sector == sector);
+            }
+
+            if (!string.IsNullOrWhiteSpace(province))
+            {
+                query = query.Where(e => e.Province == province);
+            }
+
+            if (!string.IsNullOrWhiteSpace(status))
+            {
+                query = query.Where(e => e.Status == status);
+            }
+
+            var totalFiltered = await query.CountAsync();
+            var totalPages = (int)Math.Ceiling(totalFiltered / (double)pageSize);
+            page = Math.Max(1, Math.Min(page, Math.Max(totalPages, 1)));
+
+            var employers = await query
+                .OrderBy(e => e.CompanyName)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var sectors = await _context.Employers
+                .Select(e => e.Sector)
+                .Distinct()
+                .Where(s => !string.IsNullOrWhiteSpace(s))
+                .OrderBy(s => s)
+                .ToListAsync();
+
+            var provinces = new List<string>
+    {
+        "Eastern Cape", "Free State", "Gauteng", "KwaZulu-Natal",
+        "Limpopo", "Mpumalanga", "North West", "Northern Cape", "Western Cape"
+    };
+
+            var viewModel = new EmployerIndexViewModel
+            {
+                Employers = employers,
+                SearchTerm = searchTerm,
+                Sector = sector,
+                Province = province,
+                Status = status,
+                Sectors = sectors,
+                Provinces = provinces,
+                Statuses = new List<string> { "Active", "InActive", "Pending" },
+                PageIndex = page,
+                TotalPages = totalPages,
+                TotalFilteredEmployers = totalFiltered,
+                TotalEmployers = totalEmployers,
+                ActiveCount = activeCount,
+                InactiveCount = inactiveCount,
+                PendingCount = pendingCount
+            };
+
+            return View(viewModel);
         }
 
         // GET: Employers/Details/5

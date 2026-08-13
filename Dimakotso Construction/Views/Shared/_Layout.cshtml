@@ -191,7 +191,12 @@
                 <a asp-controller="Assessors" asp-action="Index">
                     <i class="bi bi-person-badge me-2"></i>Assessors
                 </a>
-
+                <a asp-controller="courses" asp-action="Index">
+                    <i class="bi bi-book me-2"></i>Courses
+                </a>
+                <a asp-controller="certificates" asp-action="Index">
+                    <i class="bi bi-award me-2"></i>Certificates
+                </a>
                 <span class="text-white-50 small"><i class="bi bi-person-circle me-1"></i>@User.Identity!.Name</span>
                 <form asp-area="Identity" asp-page="/Account/Logout" method="post">
                     <button type="submit" class="nav-logout-btn">Logout</button>

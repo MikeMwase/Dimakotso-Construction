@@ -1,50 +1,185 @@
-﻿@model IEnumerable<Dimakotso_Construction.Models.StudentEnrollment>
+﻿@model Dimakotso_Construction.Models.StudentEnrollmentIndexViewModel
+@using Dimakotso_Construction.Models.Enums
 
 @{
     ViewData["Title"] = "Student Enrollments";
 }
 
-<div class="container-fluid mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1>Student Enrollments</h1>
-        <a asp-action="Create" class="btn btn-primary">Create New</a>
+<div class="page-header-glossy header-navy d-flex justify-content-between align-items-center flex-wrap gap-3">
+    <div class="header-content">
+        <h2 class="fw-bold mb-0"><i class="bi bi-mortarboard"></i> Student Enrollments</h2>
+        <div class="opacity-75 small mt-1">Manage learner registrations and compliance profiles</div>
+    </div>
+    <div class="header-actions">
+        <a asp-action="Create" class="btn btn-glossy-solid">
+            <i class="bi bi-plus-circle"></i> Register New Student
+        </a>
+    </div>
+</div>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-tile tile-blue">
+            <i class="bi bi-people stat-icon"></i>
+            <div class="stat-label">Total Records</div>
+            <div class="stat-value">@Model.TotalStudents</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-tile tile-green">
+            <i class="bi bi-briefcase stat-icon"></i>
+            <div class="stat-label">Active Learners</div>
+            <div class="stat-value">@Model.ActiveTrainingCount</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-tile tile-orange">
+            <i class="bi bi-clipboard-check stat-icon"></i>
+            <div class="stat-label">Registered</div>
+            <div class="stat-value">@Model.RegisteredCount</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-tile tile-slate">
+            <i class="bi bi-layers stat-icon"></i>
+            <div class="stat-label">Other Status</div>
+            <div class="stat-value">@Model.OtherStatusCount</div>
+        </div>
+    </div>
+</div>
+
+<div class="search-bar-card">
+    <form asp-action="Index" method="get" class="row g-2 align-items-center">
+        <div class="col-md-4">
+            <input type="text" name="searchTerm" class="form-control search-input-pill"
+                   placeholder="Search by name, reg #, ID or email..." value="@Model.SearchTerm" />
+        </div>
+        <div class="col-md-3">
+            <select name="employerId" class="form-select search-input-pill" asp-items="Model.Employers">
+                <option value="">All Employers</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select name="status" class="form-select search-input-pill">
+                <option value="">All Statuses</option>
+                @foreach (var s in Enum.GetValues(typeof(EnrollmentStatus)))
+                {
+                    <option value="@s" selected="@(Model.Status.HasValue && Model.Status.Value.ToString() == s.ToString())">@s</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-2 d-flex gap-2">
+            <button type="submit" class="btn btn-primary btn-pill flex-grow-1">Search</button>
+            <a asp-action="Index" class="btn btn-outline-secondary btn-pill">Clear</a>
+        </div>
+    </form>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="list-header-card">
+        <h5><i class="bi bi-journal-bookmark"></i> Enrollment List</h5>
+        <span class="text-muted">
+            Showing @Model.Students.Count() of @Model.TotalFilteredStudents student(s)
+            (Page @Model.PageIndex of @Math.Max(Model.TotalPages, 1))
+        </span>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead style="background:#f8f9fa;">
+                    <tr>
+                        <th class="ps-3">Registration #</th>
+                        <th>Student</th>
+                        <th>Employer</th>
+                        <th>Status</th>
+                        <th>Contact</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Students)
+                    {
+                        <tr>
+                            <td class="ps-3"><span class="badge bg-secondary font-monospace">@item.RegistrationNumber</span></td>
+                            <td>
+                                <div class="fw-bold">@item.FirstNames @item.Surname</div>
+                                <small class="text-muted">ID: @item.IdentificationNumber</small>
+                            </td>
+                            <td>@(item.Employer?.CompanyName ?? "—")</td>
+                            <td>
+                                <span class="badge @(item.Status == EnrollmentStatus.ActiveTraining ? "bg-success" : (item.Status == EnrollmentStatus.Registered ? "bg-warning text-dark" : "bg-danger"))">
+                                    @item.Status
+                                </span>
+                            </td>
+                            <td>
+                                <small>
+                                    <i class="bi bi-envelope"></i> @item.Email<br />
+                                    <i class="bi bi-phone"></i> @item.MobileNumber
+                                </small>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group btn-group-sm">
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info" title="View"><i class="bi bi-eye"></i></a>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary" title="Edit"><i class="bi bi-pencil"></i></a>
+                                    <a asp-controller="Certificates" asp-action="Create" asp-route-studentEnrollmentId="@item.Id"
+                                       class="btn btn-outline-success" title="Issue Certificate">
+                                        <i class="bi bi-patch-check"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger" title="Delete"><i class="bi bi-trash"></i></a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            @if (!Model.Students.Any())
+            {
+                <div class="text-center text-muted py-5">
+                    <i class="bi bi-inbox fs-1"></i>
+                    <p class="mt-2">No students found matching your filters.</p>
+                </div>
+            }
+        </div>
     </div>
 
-    <div class="table-responsive">
-        <table class="table table-striped table-hover align-middle">
-            <thead class="table-dark">
-                <tr>
-                    <th>Registration #</th>
-                    <th>Name</th>
-                    <th>ID Number</th>
-                    <th>Gender</th>
-                    <th>Program</th>
-                    <th>Status</th>
-                    <th>Contact</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    <tr>
-                        <td>@Html.DisplayFor(modelItem => item.RegistrationNumber)</td>
-                        <td>@item.FirstNames @item.Surname</td>
-                        <td>@Html.DisplayFor(modelItem => item.IdentificationNumber)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Gender)</td>
-                        <td>@Html.DisplayFor(modelItem => item.TargetProgramTitle)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Status)</td>
-                        <td>
-                            <small>@item.Email<br />@item.MobileNumber</small>
-                        </td>
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
+    @if (Model.TotalPages > 1)
+    {
+        <div class="card-footer bg-white">
+            <nav class="d-flex justify-content-center">
+                <ul class="pagination mb-0">
+                    <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index"
+                           asp-route-page="@(Model.PageIndex - 1)"
+                           asp-route-searchTerm="@Model.SearchTerm"
+                           asp-route-status="@Model.Status"
+                           asp-route-employerId="@Model.EmployerId">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                            <a class="page-link" asp-action="Index"
+                               asp-route-page="@i"
+                               asp-route-searchTerm="@Model.SearchTerm"
+                               asp-route-status="@Model.Status"
+                               asp-route-employerId="@Model.EmployerId">@i</a>
+                        </li>
+                    }
+
+                    <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index"
+                           asp-route-page="@(Model.PageIndex + 1)"
+                           asp-route-searchTerm="@Model.SearchTerm"
+                           asp-route-status="@Model.Status"
+                           asp-route-employerId="@Model.EmployerId">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    }
 </div>

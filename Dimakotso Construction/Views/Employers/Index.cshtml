@@ -1,47 +1,204 @@
-﻿@model IEnumerable<Dimakotso_Construction.Models.Employer>
+﻿@model Dimakotso_Construction.Models.EmployerIndexViewModel
 
 @{
-    ViewData["Title"] = "Employers List";
+    ViewData["Title"] = "Employers";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1>Employers</h1>
-    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Create New</a>
+<div class="page-header-glossy header-navy d-flex justify-content-between align-items-center flex-wrap gap-3">
+    <div class="header-content">
+        <h2 class="fw-bold mb-0"><i class="bi bi-building"></i> Employers</h2>
+        <div class="opacity-75 small mt-1">Manage workplace employer partners</div>
+    </div>
+    <div class="header-actions">
+        <a asp-action="Create" class="btn btn-glossy-solid">
+            <i class="bi bi-plus-circle"></i> Create New
+        </a>
+    </div>
 </div>
 
-<div class="table-responsive">
-    <table class="table table-hover table-striped border">
-        <thead class="table-dark">
-            <tr>
-                <th>@Html.DisplayNameFor(model => model.CompanyName)</th>
-                <th>Contact</th>
-                <th>Sector</th>
-                <th>Location</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model)
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="stat-tile tile-blue">
+            <i class="bi bi-building stat-icon"></i>
+            <div class="stat-label">Total Employers</div>
+            <div class="stat-value">@Model.TotalEmployers</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-tile tile-green">
+            <i class="bi bi-check-circle stat-icon"></i>
+            <div class="stat-label">Active</div>
+            <div class="stat-value">@Model.ActiveCount</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-tile tile-orange">
+            <i class="bi bi-hourglass-split stat-icon"></i>
+            <div class="stat-label">Pending</div>
+            <div class="stat-value">@Model.PendingCount</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stat-tile tile-red">
+            <i class="bi bi-x-circle stat-icon"></i>
+            <div class="stat-label">Inactive</div>
+            <div class="stat-value">@Model.InactiveCount</div>
+        </div>
+    </div>
+</div>
+
+<div class="search-bar-card">
+    <form asp-action="Index" method="get" class="row g-2 align-items-center">
+        <div class="col-md-4">
+            <input type="text" name="searchTerm" class="form-control search-input-pill"
+                   placeholder="Search by company, contact or city..." value="@Model.SearchTerm" />
+        </div>
+        <div class="col-md-2">
+            <select name="sector" class="form-select search-input-pill">
+                <option value="">All Sectors</option>
+                @foreach (var s in Model.Sectors)
+                {
+                    <option value="@s" selected="@(s == Model.Sector)">@s</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="province" class="form-select search-input-pill">
+                <option value="">All Provinces</option>
+                @foreach (var p in Model.Provinces)
+                {
+                    <option value="@p" selected="@(p == Model.Province)">@p</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="status" class="form-select search-input-pill">
+                <option value="">All Statuses</option>
+                @foreach (var st in Model.Statuses)
+                {
+                    <option value="@st" selected="@(st == Model.Status)">@st</option>
+                }
+            </select>
+        </div>
+        <div class="col-md-2 d-flex gap-2">
+            <button type="submit" class="btn btn-primary btn-pill flex-grow-1">Search</button>
+            <a asp-action="Index" class="btn btn-outline-secondary btn-pill">Clear</a>
+        </div>
+    </form>
+</div>
+
+<div class="card shadow-sm border-0">
+    <div class="list-header-card">
+        <h5><i class="bi bi-journal-bookmark"></i> Employer List</h5>
+        <span class="text-muted">
+            Showing @Model.Employers.Count() of @Model.TotalFilteredEmployers employer(s)
+            (Page @Model.PageIndex of @Math.Max(Model.TotalPages, 1))
+        </span>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead style="background:#f8f9fa;">
+                    <tr>
+                        <th class="ps-3">Company</th>
+                        <th>Contact</th>
+                        <th>Sector</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Employers)
+                    {
+                        <tr>
+                            <td class="ps-3"><strong>@item.CompanyName</strong></td>
+                            <td>
+                                <small>@item.ContactPerson</small><br />
+                                <small class="text-muted">@item.ContactEmail</small>
+                            </td>
+                            <td>@item.Sector</td>
+                            <td>@item.City, @item.Province</td>
+                            <td>
+                                @{
+                                    var badgeClass = item.Status switch
+                                    {
+                                        "Active" => "bg-success",
+                                        "InActive" => "bg-secondary",
+                                        "Pending" => "bg-warning text-dark",
+                                        _ => "bg-light text-dark"
+                                    };
+                                }
+                                <span class="badge @badgeClass px-3 py-2">@item.Status</span>
+                            </td>
+                            <td class="text-center">
+                                <div class="btn-group btn-group-sm">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary" title="Edit">
+                                        <i class="bi bi-pencil"></i>
+                                    </a>
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info" title="Details">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            @if (!Model.Employers.Any())
             {
-                <tr>
-                    <td><strong>@item.CompanyName</strong></td>
-                    <td>
-                        <small>@item.ContactPerson</small><br />
-                        <small class="text-muted">@item.ContactEmail</small>
-                    </td>
-                    <td>@item.Sector</td>
-                    <td>@item.City, @item.Province</td>
-                    <td><span class="badge bg-success">@item.Status</span></td>
-                    <td>
-                        <div class="btn-group btn-group-sm">
-                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-primary">Edit</a>
-                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-outline-info">Details</a>
-                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-outline-danger">Delete</a>
-                        </div>
-                    </td>
-                </tr>
+                <div class="text-center text-muted py-5">
+                    <i class="bi bi-inbox fs-1"></i>
+                    <p class="mt-2">No employers found matching your filters.</p>
+                </div>
             }
-        </tbody>
-    </table>
+        </div>
+    </div>
+
+    @if (Model.TotalPages > 1)
+    {
+        <div class="card-footer bg-white">
+            <nav class="d-flex justify-content-center">
+                <ul class="pagination mb-0">
+                    <li class="page-item @(!Model.HasPreviousPage ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index"
+                           asp-route-page="@(Model.PageIndex - 1)"
+                           asp-route-searchTerm="@Model.SearchTerm"
+                           asp-route-sector="@Model.Sector"
+                           asp-route-province="@Model.Province"
+                           asp-route-status="@Model.Status">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                            <a class="page-link" asp-action="Index"
+                               asp-route-page="@i"
+                               asp-route-searchTerm="@Model.SearchTerm"
+                               asp-route-sector="@Model.Sector"
+                               asp-route-province="@Model.Province"
+                               asp-route-status="@Model.Status">@i</a>
+                        </li>
+                    }
+
+                    <li class="page-item @(!Model.HasNextPage ? "disabled" : "")">
+                        <a class="page-link" asp-action="Index"
+                           asp-route-page="@(Model.PageIndex + 1)"
+                           asp-route-searchTerm="@Model.SearchTerm"
+                           asp-route-sector="@Model.Sector"
+                           asp-route-province="@Model.Province"
+                           asp-route-status="@Model.Status">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    }
 </div>

@@ -22,6 +22,77 @@ namespace Dimakotso_Construction.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Dimakotso_Construction.Models.AssessorCourse", b =>
+                {
+                    b.Property<int>("AssessorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("AccreditationNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("AssessorId", "CourseId");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("AssessorCourses");
+                });
+
+            modelBuilder.Entity("Dimakotso_Construction.Models.AssessorQualification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("AssessorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ContentType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("DateObtained")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ExpiryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<byte[]>("FileData")
+                        .IsRequired()
+                        .HasColumnType("varbinary(max)");
+
+                    b.Property<string>("FileName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("FileSizeBytes")
+                        .HasColumnType("bigint");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("IssuingBody")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("QualificationName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UploadedOn")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssessorId");
+
+                    b.ToTable("AssessorQualifications");
+                });
+
             modelBuilder.Entity("Dimakotso_Construction.Models.Assessors", b =>
                 {
                     b.Property<int>("Id")
@@ -30,15 +101,15 @@ namespace Dimakotso_Construction.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AssessorNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Contact")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Department")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("EmployeeId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -55,12 +126,145 @@ namespace Dimakotso_Construction.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("qualifications")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("Assessors");
+                });
+
+            modelBuilder.Entity("Dimakotso_Construction.Models.Certificate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AssessmentMetadata")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("AssessorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CertificateCategory")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CertificateDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CertificateLevel")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CertificateNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CertificateTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("ExpiryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("FinalPercentage")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<DateTime>("IssueDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("JobNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MachineCapacity")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MachineCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MachineDescription")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MachineModel")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("NeedsFitnessCertificate")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("NoExpiryAdviseRenew")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("PracticalPercentage")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<string>("SelectedAssessorQualification")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("StudentEnrollmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("StudentEnrollmentId1")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("TheoreticalPercentage")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<string>("VerificationAndCompliance")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AssessorId");
+
+                    b.HasIndex("CourseId");
+
+                    b.HasIndex("StudentEnrollmentId");
+
+                    b.HasIndex("StudentEnrollmentId1");
+
+                    b.ToTable("Certificates");
+                });
+
+            modelBuilder.Entity("Dimakotso_Construction.Models.CertificateAttachment", b =>
+                {
+                    b.Property<int>("CertificateId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MachineAttachmentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CertificateId", "MachineAttachmentId");
+
+                    b.HasIndex("MachineAttachmentId");
+
+                    b.ToTable("CertificateAttachments");
+                });
+
+            modelBuilder.Entity("Dimakotso_Construction.Models.CertificateRestriction", b =>
+                {
+                    b.Property<int>("CertificateId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MachineRestrictionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CertificateId", "MachineRestrictionId");
+
+                    b.HasIndex("MachineRestrictionId");
+
+                    b.ToTable("CertificateRestrictions");
                 });
 
             modelBuilder.Entity("Dimakotso_Construction.Models.ComplianceDocument", b =>
@@ -83,6 +287,59 @@ namespace Dimakotso_Construction.Migrations
                     b.HasKey("StudentEnrollmentId");
 
                     b.ToTable("ComplianceDocuments");
+                });
+
+            modelBuilder.Entity("Dimakotso_Construction.Models.Course", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Certification")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CourseCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CourseName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Credits")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DurationHours")
+                        .HasColumnType("int");
+
+                    b.Property<string>("LearningObjectives")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NQFLevel")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Prerequisites")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UnitStandardNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Courses");
                 });
 
             modelBuilder.Entity("Dimakotso_Construction.Models.Employer", b =>
@@ -126,6 +383,81 @@ namespace Dimakotso_Construction.Migrations
                     b.ToTable("Employers");
                 });
 
+            modelBuilder.Entity("Dimakotso_Construction.Models.MachineAttachment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MachineAttachments");
+                });
+
+            modelBuilder.Entity("Dimakotso_Construction.Models.MachineRestriction", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("MachineRestrictions");
+                });
+
+            modelBuilder.Entity("Dimakotso_Construction.Models.StudentCourse", b =>
+                {
+                    b.Property<int>("StudentEnrollmentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CertificateNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("Competent")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("CompletionDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("EnrolmentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal?>("FinalMark")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("StudentEnrollmentId", "CourseId");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("StudentCourses");
+                });
+
             modelBuilder.Entity("Dimakotso_Construction.Models.StudentEnrollment", b =>
                 {
                     b.Property<int>("Id")
@@ -136,6 +468,10 @@ namespace Dimakotso_Construction.Migrations
 
                     b.Property<int>("Citizenship")
                         .HasColumnType("int");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("CurrentEmployment")
                         .HasColumnType("int");
@@ -152,6 +488,9 @@ namespace Dimakotso_Construction.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("EmployerId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Equity")
                         .HasColumnType("int");
@@ -182,6 +521,9 @@ namespace Dimakotso_Construction.Migrations
                         .HasMaxLength(13)
                         .HasColumnType("nvarchar(13)");
 
+                    b.Property<string>("MiddleNames")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("MobileNumber")
                         .IsRequired()
                         .HasMaxLength(15)
@@ -196,9 +538,6 @@ namespace Dimakotso_Construction.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("SaqaId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
@@ -207,22 +546,15 @@ namespace Dimakotso_Construction.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("TargetProgramTitle")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("WorkplacePlacementId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
+
+                    b.HasIndex("EmployerId");
 
                     b.HasIndex("IdentificationNumber")
                         .IsUnique();
 
                     b.HasIndex("RegistrationNumber")
                         .IsUnique();
-
-                    b.HasIndex("WorkplacePlacementId");
 
                     b.ToTable("StudentEnrollments");
                 });
@@ -474,6 +806,104 @@ namespace Dimakotso_Construction.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Dimakotso_Construction.Models.AssessorCourse", b =>
+                {
+                    b.HasOne("Dimakotso_Construction.Models.Assessors", "Assessor")
+                        .WithMany("AssessorCourses")
+                        .HasForeignKey("AssessorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Dimakotso_Construction.Models.Course", "Course")
+                        .WithMany("AssessorCourses")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Assessor");
+
+                    b.Navigation("Course");
+                });
+
+            modelBuilder.Entity("Dimakotso_Construction.Models.AssessorQualification", b =>
+                {
+                    b.HasOne("Dimakotso_Construction.Models.Assessors", "Assessor")
+                        .WithMany("QualificationDocuments")
+                        .HasForeignKey("AssessorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Assessor");
+                });
+
+            modelBuilder.Entity("Dimakotso_Construction.Models.Certificate", b =>
+                {
+                    b.HasOne("Dimakotso_Construction.Models.Assessors", "Assessor")
+                        .WithMany()
+                        .HasForeignKey("AssessorId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("Dimakotso_Construction.Models.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Dimakotso_Construction.Models.StudentEnrollment", "StudentEnrollment")
+                        .WithMany()
+                        .HasForeignKey("StudentEnrollmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Dimakotso_Construction.Models.StudentEnrollment", null)
+                        .WithMany("Certificates")
+                        .HasForeignKey("StudentEnrollmentId1");
+
+                    b.Navigation("Assessor");
+
+                    b.Navigation("Course");
+
+                    b.Navigation("StudentEnrollment");
+                });
+
+            modelBuilder.Entity("Dimakotso_Construction.Models.CertificateAttachment", b =>
+                {
+                    b.HasOne("Dimakotso_Construction.Models.Certificate", "Certificate")
+                        .WithMany("CertificateAttachments")
+                        .HasForeignKey("CertificateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Dimakotso_Construction.Models.MachineAttachment", "MachineAttachment")
+                        .WithMany()
+                        .HasForeignKey("MachineAttachmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Certificate");
+
+                    b.Navigation("MachineAttachment");
+                });
+
+            modelBuilder.Entity("Dimakotso_Construction.Models.CertificateRestriction", b =>
+                {
+                    b.HasOne("Dimakotso_Construction.Models.Certificate", "Certificate")
+                        .WithMany("CertificateRestrictions")
+                        .HasForeignKey("CertificateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Dimakotso_Construction.Models.MachineRestriction", "MachineRestriction")
+                        .WithMany()
+                        .HasForeignKey("MachineRestrictionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Certificate");
+
+                    b.Navigation("MachineRestriction");
+                });
+
             modelBuilder.Entity("Dimakotso_Construction.Models.ComplianceDocument", b =>
                 {
                     b.HasOne("Dimakotso_Construction.Models.StudentEnrollment", "StudentEnrollment")
@@ -485,13 +915,32 @@ namespace Dimakotso_Construction.Migrations
                     b.Navigation("StudentEnrollment");
                 });
 
+            modelBuilder.Entity("Dimakotso_Construction.Models.StudentCourse", b =>
+                {
+                    b.HasOne("Dimakotso_Construction.Models.Course", "Course")
+                        .WithMany("StudentCourses")
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Dimakotso_Construction.Models.StudentEnrollment", "StudentEnrollment")
+                        .WithMany("StudentCourses")
+                        .HasForeignKey("StudentEnrollmentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+
+                    b.Navigation("StudentEnrollment");
+                });
+
             modelBuilder.Entity("Dimakotso_Construction.Models.StudentEnrollment", b =>
                 {
-                    b.HasOne("Dimakotso_Construction.Models.WorkplacePlacement", "WorkplacePlacement")
+                    b.HasOne("Dimakotso_Construction.Models.Employer", "Employer")
                         .WithMany()
-                        .HasForeignKey("WorkplacePlacementId");
+                        .HasForeignKey("EmployerId");
 
-                    b.Navigation("WorkplacePlacement");
+                    b.Navigation("Employer");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -545,10 +994,34 @@ namespace Dimakotso_Construction.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Dimakotso_Construction.Models.Assessors", b =>
+                {
+                    b.Navigation("AssessorCourses");
+
+                    b.Navigation("QualificationDocuments");
+                });
+
+            modelBuilder.Entity("Dimakotso_Construction.Models.Certificate", b =>
+                {
+                    b.Navigation("CertificateAttachments");
+
+                    b.Navigation("CertificateRestrictions");
+                });
+
+            modelBuilder.Entity("Dimakotso_Construction.Models.Course", b =>
+                {
+                    b.Navigation("AssessorCourses");
+
+                    b.Navigation("StudentCourses");
+                });
+
             modelBuilder.Entity("Dimakotso_Construction.Models.StudentEnrollment", b =>
                 {
-                    b.Navigation("VerificationDocuments")
-                        .IsRequired();
+                    b.Navigation("Certificates");
+
+                    b.Navigation("StudentCourses");
+
+                    b.Navigation("VerificationDocuments");
                 });
 #pragma warning restore 612, 618
         }
