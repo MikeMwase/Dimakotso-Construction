@@ -29,7 +29,7 @@
 
         <div class="card-body p-4 bg-white">
             <form asp-action="Edit">
-                <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+                <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
 
                 <h6 class="text-primary fw-bold border-bottom pb-2 mb-3 text-uppercase small tracking-wider">System References</h6>
                 <div class="row g-3 mb-4">
@@ -139,10 +139,17 @@
                     </div>
                 </div>
 
-                <div class="mb-4">
-                    <label asp-for="HomeAddress" class="form-label fw-semibold small text-muted"></label>
-                    <input asp-for="HomeAddress" class="form-control" />
-                    <span asp-validation-for="HomeAddress" class="text-danger small"></span>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label asp-for="HomeAddress" class="form-label fw-semibold small text-muted"></label>
+                        <input asp-for="HomeAddress" class="form-control" />
+                        <span asp-validation-for="HomeAddress" class="text-danger small"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="City" class="form-label fw-semibold small text-muted"></label>
+                        <input asp-for="City" class="form-control" />
+                        <span asp-validation-for="City" class="text-danger small"></span>
+                    </div>
                 </div>
 
                 <h6 class="text-primary fw-bold border-bottom pb-2 mb-3 text-uppercase small tracking-wider">Academic Placement Profile</h6>

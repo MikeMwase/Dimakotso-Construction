@@ -149,7 +149,7 @@
                         <span asp-validation-for="City" class="text-danger small"></span>
                     </div>
                 </div>
-                
+
                 <h6 class="text-primary fw-bold border-bottom pb-2 mb-3 text-uppercase small tracking-wider">Academic Placement Profile</h6>
                 <div class="row g-3 mb-4">
                     <div class="col-md-6">
@@ -164,29 +164,6 @@
                     </div> *@
                 </div>
 
-                <div class="row g-3 mb-4">
-                    <div class="col-md-6">
-                        @* <p>Employers found: @ViewBag.TestCount</p> *@
-                        <label asp-for="EmployerId" class="form-label fw-semibold small text-muted"></label>
-
-                        <select asp-for="EmployerId"
-                                class="form-select"
-                                asp-items="ViewBag.EmployerId">
-                            <option value="">-- Select Host Employer --</option>
-                        </select>
-
-                        <span asp-validation-for="EmployerId"
-                              class="text-danger small"></span>
-                    </div>
-                    <div class="col-md-6">
-                        <label asp-for="Status" class="form-label fw-semibold small text-muted"></label>
-                        <select asp-for="Status"
-                                class="form-select"
-                                asp-items="ViewBag.Status">
-                        </select>
-                        <span asp-validation-for="Status" class="text-danger small"></span>
-                    </div>
-                </div>
                 <h6 class="text-primary fw-bold border-bottom pb-2 mb-3 text-uppercase small tracking-wider">Course Enrollment</h6>
                 <div class="card border-0 bg-light mb-4">
                     <div class="card-body">

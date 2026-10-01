@@ -238,8 +238,94 @@ namespace Dimakotso_Construction.Controllers
                 viewModel.SelectedCourseUnitStandardNumber = only.UnitStandardNumber;
 
                 viewModel.Assessors = await _context.Assessors
-                    .Where(a => a.AssessorCourses.Any(ac => ac.CourseId == only.Id))
+                    .Where(a => a.Status == "Active" && a.AssessorCourses.Any(ac => ac.CourseId == only.Id))
                     .Select(a => new SelectListItem { Value = a.Id.ToString(), Text = a.FirstName + " " + a.LastName })
+                    .ToListAsync();
+            }
+
+            return View(viewModel);
+        }
+
+        // POST: Certificates/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CertificateCreateViewModel viewModel)
+        {
+            var certificate = viewModel.Certificate;
+
+            var student = certificate.StudentEnrollmentId > 0
+                ? await _context.StudentEnrollments
+                    .Include(s => s.Employer)
+                    .FirstOrDefaultAsync(s => s.Id == certificate.StudentEnrollmentId)
+                : null;
+
+            var enrolledCourseIds = student != null
+                ? await _context.StudentCourses
+                    .Where(sc => sc.StudentEnrollmentId == certificate.StudentEnrollmentId)
+                    .Select(sc => sc.CourseId)
+                    .ToListAsync()
+                : new List<int>();
+
+            if (student == null)
+            {
+                ModelState.AddModelError("", "Please select a student before issuing a certificate.");
+            }
+            else if (!enrolledCourseIds.Any())
+            {
+                ModelState.AddModelError("",
+                    $"{student.FirstNames} {student.Surname} is not enrolled in any courses.");
+            }
+
+            ModelState.Remove("Certificate.StudentEnrollment");
+            ModelState.Remove("Certificate.Course");
+            ModelState.Remove("Certificate.Assessor");
+
+            if (ModelState.IsValid)
+            {
+                _context.Add(certificate);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            viewModel.RequiresStudentSelection = student == null;
+
+            if (student != null)
+            {
+                viewModel.LearnerFirstName = student.FirstNames;
+                viewModel.LearnerMiddleNames = student.MiddleNames;
+                viewModel.LearnerSurname = student.Surname;
+                viewModel.LearnerEmail = student.Email;
+                viewModel.LearnerMobileNumber = student.MobileNumber;
+                viewModel.LearnerHomeAddress = student.HomeAddress;
+                viewModel.LearnerCity = student.City;
+                viewModel.LearnerPostalCode = student.PostalCode;
+                viewModel.LearnerIdentificationNumber = student.IdentificationNumber;
+
+                viewModel.HasEmployer = student.Employer != null;
+                if (student.Employer != null)
+                {
+                    viewModel.EmployerCompanyName = student.Employer.CompanyName;
+                    viewModel.EmployerContactPerson = student.Employer.ContactPerson;
+                    viewModel.EmployerContactEmail = student.Employer.ContactEmail;
+                    viewModel.EmployerContactPhone = student.Employer.ContactPhone;
+                    viewModel.EmployerCity = student.Employer.City;
+                    viewModel.EmployerProvince = student.Employer.Province;
+                }
+
+                viewModel.Courses = await _context.Courses
+                    .Where(c => enrolledCourseIds.Contains(c.Id))
+                    .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.CourseCode })
+                    .ToListAsync();
+
+                viewModel.Assessors = await _context.Assessors
+                   .Where(a => a.Status == "Active" && a.AssessorCourses.Any(ac => ac.CourseId == certificate.CourseId))
+                   .Select(a => new SelectListItem { Value = a.Id.ToString(), Text = a.FirstName + " " + a.LastName })
+                   .ToListAsync();
+            }
+            else
+            {
+                viewModel.Students = await _context.StudentEnrollments
+                    .Select(s => new SelectListItem { Value = s.Id.ToString(), Text = s.FirstNames + " " + s.Surname })
                     .ToListAsync();
             }
 
@@ -331,91 +417,7 @@ namespace Dimakotso_Construction.Controllers
             });
         }
 
-        // POST: Certificates/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CertificateCreateViewModel viewModel)
-        {
-            var certificate = viewModel.Certificate;
-
-            var student = certificate.StudentEnrollmentId > 0
-                ? await _context.StudentEnrollments
-                    .Include(s => s.Employer)
-                    .FirstOrDefaultAsync(s => s.Id == certificate.StudentEnrollmentId)
-                : null;
-
-            var enrolledCourseIds = student != null
-                ? await _context.StudentCourses
-                    .Where(sc => sc.StudentEnrollmentId == certificate.StudentEnrollmentId)
-                    .Select(sc => sc.CourseId)
-                    .ToListAsync()
-                : new List<int>();
-
-            if (student == null)
-            {
-                ModelState.AddModelError("", "Please select a student before issuing a certificate.");
-            }
-            else if (!enrolledCourseIds.Any())
-            {
-                ModelState.AddModelError("",
-                    $"{student.FirstNames} {student.Surname} is not enrolled in any courses.");
-            }
-
-            ModelState.Remove("Certificate.StudentEnrollment");
-            ModelState.Remove("Certificate.Course");
-            ModelState.Remove("Certificate.Assessor");
-
-            if (ModelState.IsValid)
-            {
-                _context.Add(certificate);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-
-            viewModel.RequiresStudentSelection = student == null;
-
-            if (student != null)
-            {
-                viewModel.LearnerFirstName = student.FirstNames;
-                viewModel.LearnerMiddleNames = student.MiddleNames;
-                viewModel.LearnerSurname = student.Surname;
-                viewModel.LearnerEmail = student.Email;
-                viewModel.LearnerMobileNumber = student.MobileNumber;
-                viewModel.LearnerHomeAddress = student.HomeAddress;
-                viewModel.LearnerCity = student.City;
-                viewModel.LearnerPostalCode = student.PostalCode;
-                viewModel.LearnerIdentificationNumber = student.IdentificationNumber;
-
-                viewModel.HasEmployer = student.Employer != null;
-                if (student.Employer != null)
-                {
-                    viewModel.EmployerCompanyName = student.Employer.CompanyName;
-                    viewModel.EmployerContactPerson = student.Employer.ContactPerson;
-                    viewModel.EmployerContactEmail = student.Employer.ContactEmail;
-                    viewModel.EmployerContactPhone = student.Employer.ContactPhone;
-                    viewModel.EmployerCity = student.Employer.City;
-                    viewModel.EmployerProvince = student.Employer.Province;
-                }
-
-                viewModel.Courses = await _context.Courses
-                    .Where(c => enrolledCourseIds.Contains(c.Id))
-                    .Select(c => new SelectListItem { Value = c.Id.ToString(), Text = c.CourseCode })
-                    .ToListAsync();
-
-                viewModel.Assessors = await _context.Assessors
-                    .Where(a => a.AssessorCourses.Any(ac => ac.CourseId == certificate.CourseId))
-                    .Select(a => new SelectListItem { Value = a.Id.ToString(), Text = a.FirstName + " " + a.LastName })
-                    .ToListAsync();
-            }
-            else
-            {
-                viewModel.Students = await _context.StudentEnrollments
-                    .Select(s => new SelectListItem { Value = s.Id.ToString(), Text = s.FirstNames + " " + s.Surname })
-                    .ToListAsync();
-            }
-
-            return View(viewModel);
-        }
+        
 
         // GET: Certificates/Edit/5
         public async Task<IActionResult> Edit(int? id)

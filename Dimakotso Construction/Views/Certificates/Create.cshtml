@@ -14,6 +14,9 @@
         <a asp-action="Index" class="btn btn-glossy-light">
             <i class="bi bi-arrow-left me-1"></i> Back to List
         </a>
+        <a asp-action="Index" asp-controller="StudentEnrollments" class="btn btn-glossy-light">
+            <i class="bi bi-arrow-left me-1"></i> Back to Students
+        </a>
     </div>
 </div>
 
@@ -219,20 +222,30 @@
             </div>
 
             <div class="row g-3">
-                <div class="col-md-6">
-                    <label asp-for="Certificate.AssessorId" class="form-label">Accredited Assessor</label>
-                    <div class="input-group">
-                        <select asp-for="Certificate.AssessorId" class="form-select" asp-items="Model.Assessors" id="Certificate_AssessorId">
-                            <option value="">-- Select Assessor --</option>
-                        </select>
-                        <button type="button" class="btn btn-secondary" id="btnLoadAssessor">
-                            <i class="bi bi-arrow-clockwise"></i> Load
-                        </button>
-                    </div>
-                    <span asp-validation-for="Certificate.AssessorId" class="text-danger"></span>
-                    <div id="assessorContactInfo" class="form-text text-muted small mt-1"></div>
+                <div class="col-md-12">
+                    <label class="form-label fw-bold">Active Accredited Assessor</label>
 
-                    <!-- Hidden field retained for model binding -->
+                    <div id="AssessorListContainer" class="d-flex flex-wrap gap-3 p-3 border rounded" style="background-color: #f8f9fa;">
+                        @if (Model.Assessors != null && Model.Assessors.Any())
+                        {
+                            foreach (var assessor in Model.Assessors)
+                            {
+                                var isChecked = Model.Certificate?.AssessorId.ToString() == assessor.Value;
+                                <div class="form-check m-0 p-2 pe-4 border rounded bg-white shadow-sm" style="transition: background 0.2s ease;">
+                                    <input class="form-check-input assessor-radio mt-1 ms-1" type="radio" name="Certificate.AssessorId" id="assessor_@assessor.Value" value="@assessor.Value" @(isChecked ? "checked" : "")>
+                                    <label class="form-check-label ms-2" style="cursor:pointer;" for="assessor_@assessor.Value">
+                                        <span class="fw-bold text-primary">@assessor.Text</span>
+                                    </label>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <span class="text-muted small">Select a course to view available active assessors.</span>
+                        }
+                    </div>
+
+                    <span asp-validation-for="Certificate.AssessorId" class="text-danger"></span>
                     <input type="hidden" asp-for="Certificate.SelectedAssessorQualification" id="Certificate_SelectedAssessorQualification" />
                 </div>
             </div>
@@ -254,8 +267,6 @@
     <script>
         $(document).ready(function () {
             var courseInfoMap = @Html.Raw(safeCourseJson);
-
-            // Pure JS memory array to hold assessor data
             var loadedAssessors = [];
 
             function clearCourseFields() {
@@ -302,23 +313,6 @@
                 $('#courseInfoUnitStandard').val(data.unitStandardNumber || 'N/A');
             }
 
-            // Populates the fields instantly from the local JS array
-            function populateAssessorDetails() {
-                var assessorId = $('#Certificate_AssessorId').val();
-
-                if (!assessorId) {
-                    $('#Certificate_SelectedAssessorQualification').val('');
-                    return;
-                }
-
-                var assessor = loadedAssessors.find(function (a) { return a.id == assessorId; });
-
-                if (assessor) {
-                    $('#Certificate_SelectedAssessorQualification').val(assessor.qualification || '');
-                }
-            }
-
-            // Direct fetch fallback — used when an assessor isn't found in the local cache
             function fetchAssessorDetailsDirect(assessorId, courseId, onComplete) {
                 $.getJSON('@Url.Action("GetAssessorDetails", "Certificates")', {
                     assessorId: assessorId,
@@ -326,8 +320,6 @@
                 })
                 .done(function (data) {
                     $('#Certificate_SelectedAssessorQualification').val(data.qualification || '');
-
-                    // Cache it so subsequent lookups are instant
                     loadedAssessors.push({
                         id: parseInt(assessorId, 10),
                         qualification: data.qualification,
@@ -341,7 +333,6 @@
                 .fail(function (jqxhr, textStatus, error) {
                     console.error("Failed to load assessor details:", textStatus, error);
                     $('#Certificate_SelectedAssessorQualification').val('Error loading details');
-                    alert("Could not load assessor details. Please try again.");
                 })
                 .always(function () {
                     if (onComplete) onComplete();
@@ -354,10 +345,10 @@
                 var courseSelect = $('#Certificate_CourseId');
 
                 courseSelect.empty().append('<option value="">-- Select Enrolled Course --</option>');
-                $('#Certificate_AssessorId').empty().append('<option value="">-- Select Assessor --</option>');
+                $('#AssessorListContainer').html('<span class="text-muted small">Select a course to view available active assessors.</span>');
 
                 loadedAssessors = [];
-                populateAssessorDetails();
+                $('#Certificate_SelectedAssessorQualification').val('');
                 clearCourseFields();
 
                 if (studentId) {
@@ -368,8 +359,6 @@
                                 text: item.code + ' - ' + item.name
                             }));
                         });
-                    }).fail(function (jqxhr, textStatus, error) {
-                        console.error("Failed to load courses:", error);
                     });
                 }
             });
@@ -377,13 +366,11 @@
             // 2. Course Dropdown Change
             $('#Certificate_CourseId').change(function () {
                 var courseId = $(this).val();
-                var assessorSelect = $('#Certificate_AssessorId');
+                var assessorContainer = $('#AssessorListContainer');
 
-                assessorSelect.empty().append('<option value="">-- Select Accredited Assessor --</option>');
-                $('#assessorContactInfo').text('').removeClass('text-danger');
-
+                assessorContainer.empty();
+                $('#Certificate_SelectedAssessorQualification').val('');
                 loadedAssessors = [];
-                populateAssessorDetails();
 
                 if (courseId) {
                     var courseData = courseInfoMap.find(function (c) { return c.id == courseId; });
@@ -394,67 +381,53 @@
                     $.getJSON('@Url.Action("GetAssessorsByCourse", "Certificates")', { courseId: courseId }, function (data) {
                         loadedAssessors = data;
 
-                        $.each(data, function (i, item) {
-                            assessorSelect.append($('<option>', {
-                                value: item.id,
-                                text: item.name
-                            }));
-                        });
-
                         if (data.length === 0) {
-                            $('#assessorContactInfo').text('No accredited assessors found for this course.').addClass('text-danger');
+                            assessorContainer.append('<div class="text-danger small py-2"><i class="bi bi-exclamation-circle me-1"></i> No active, accredited assessors found for this course.</div>');
+                        } else {
+                            $.each(data, function (i, item) {
+                                var html = `
+                                    <div class="form-check m-0 p-2 pe-4 border rounded bg-white shadow-sm" style="transition: background 0.2s ease;">
+                                        <input class="form-check-input assessor-radio mt-1 ms-1" type="radio" name="Certificate.AssessorId" id="assessor_${item.id}" value="${item.id}">
+                                        <label class="form-check-label ms-2" style="cursor:pointer;" for="assessor_${item.id}">
+                                            <span class="fw-bold text-primary">${item.name}</span>
+                                        </label>
+                                    </div>
+                                `;
+                                assessorContainer.append(html);
+                            });
                         }
-                    }).fail(function (jqxhr, textStatus, error) {
-                        console.error("Failed to load assessors:", error);
                     });
                 } else {
                     clearCourseFields();
+                    assessorContainer.append('<span class="text-muted small">Select a course to view available active assessors.</span>');
                 }
             });
 
-            // 3. Assessor Dropdown Change
-            $('#Certificate_AssessorId').change(function () {
-                populateAssessorDetails();
-            });
-
-            // 4. Manual button click to load Assessor details — with fallback to a direct fetch
-            $('#btnLoadAssessor').click(function (e) {
-                e.preventDefault();
-
-                var $btn = $(this);
-                var assessorId = $('#Certificate_AssessorId').val();
+            // 3. Assessor Checkbox (Radio) Change via Event Delegation
+            $(document).on('change', '.assessor-radio', function () {
+                var assessorId = $(this).val();
                 var courseId = $('#Certificate_CourseId').val();
 
                 if (!assessorId) {
-                    alert("Please select an assessor from the dropdown first.");
+                    $('#Certificate_SelectedAssessorQualification').val('');
                     return;
                 }
 
                 var cached = loadedAssessors.find(function (a) { return a.id == assessorId; });
 
                 if (cached) {
-                    populateAssessorDetails();
-                    return;
+                    $('#Certificate_SelectedAssessorQualification').val(cached.qualification || '');
+                } else {
+                    $('#Certificate_SelectedAssessorQualification').val('Loading...');
+                    fetchAssessorDetailsDirect(assessorId, courseId);
                 }
-
-                // Cache miss — fetch directly
-                $btn.prop('disabled', true).html('<i class="bi bi-arrow-repeat"></i> Loading...');
-
-                $('#Certificate_SelectedAssessorQualification').val('Loading...');
-
-                fetchAssessorDetailsDirect(assessorId, courseId, function () {
-                    $btn.prop('disabled', false).html('<i class="bi bi-arrow-clockwise"></i> Load');
-                });
             });
 
-            // 5. Initial load fetch (Handles server pre-selected states seamlessly)
+            // 4. Initial load fetch (Handles server pre-selected states seamlessly)
             var initialCourseId = $('#Certificate_CourseId').val();
             if (initialCourseId) {
                 $.getJSON('@Url.Action("GetAssessorsByCourse", "Certificates")', { courseId: initialCourseId }, function (data) {
                     loadedAssessors = data;
-                    if ($('#Certificate_AssessorId').val()) {
-                        populateAssessorDetails();
-                    }
                 });
             }
         });

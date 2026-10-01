@@ -1,6 +1,7 @@
 ﻿using Dimakotso_Construction.Data;
 using Dimakotso_Construction.Models;
 using Dimakotso_Construction.Models.Enums;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -159,6 +160,7 @@ namespace Dimakotso_Construction.Controllers
         }
 
         // GET: StudentEnrollments/Create
+        [AllowAnonymous]
         public IActionResult Create()
         {
             var studentEnrollment = new StudentEnrollment
@@ -175,15 +177,27 @@ namespace Dimakotso_Construction.Controllers
 
         // POST: StudentEnrollments/Create
         [HttpPost]
+        [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(
-            [Bind("Id,RegistrationNumber,FirstNames,Surname,IdentificationNumber,DateOfBirth,Gender,Equity,Citizenship,DisabilityStatus,CurrentEmployment,HighestQualification,Email,MobileNumber,HomeAddress,City,PostalCode,Status,DateCreated,HasConsentedToPopiaDataSharing,EmployerId")] StudentEnrollment studentEnrollment,
+            [Bind("Id,RegistrationNumber,FirstNames,Surname,IdentificationNumber,DateOfBirth,Gender,Equity,Citizenship,DisabilityStatus,CurrentEmployment,HighestQualification,Email,MobileNumber,HomeAddress,City,PostalCode,DateCreated,HasConsentedToPopiaDataSharing")] StudentEnrollment studentEnrollment,
             List<int>? selectedCourseIds)
         {
+            // Check if the Identification Number already exists in the database
+            if (await _context.StudentEnrollments.AnyAsync(s => s.IdentificationNumber == studentEnrollment.IdentificationNumber))
+            {
+                ModelState.AddModelError("IdentificationNumber", "A student with this Identification Number already exists.");
+            }
+
             if (ModelState.IsValid)
             {
                 studentEnrollment.RegistrationNumber = $"DC-{Guid.NewGuid().ToString()[..8].ToUpper()}";
                 studentEnrollment.DateCreated = DateTime.Today;
+
+                // Learners applying online cannot choose their own workplace or status -
+                // these are staff-only fields, set here regardless of what was posted.
+                studentEnrollment.EmployerId = null;
+                studentEnrollment.Status = EnrollmentStatus.Registered;
 
                 if (selectedCourseIds != null)
                 {
@@ -201,7 +215,7 @@ namespace Dimakotso_Construction.Controllers
                 _context.StudentEnrollments.Add(studentEnrollment);
                 await _context.SaveChangesAsync();
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Home");
             }
 
             PopulateDropdowns(studentEnrollment);
@@ -228,10 +242,16 @@ namespace Dimakotso_Construction.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(
             int id,
-            [Bind("Id,FirstNames,Surname,IdentificationNumber,DateOfBirth,Gender,Equity,Citizenship,DisabilityStatus,CurrentEmployment,HighestQualification,Email,MobileNumber,HomeAddress,City,PostalCode,Status,HasConsentedToPopiaDataSharing,EmployerId")] StudentEnrollment studentEnrollment,
+            [Bind("Id,RegistrationNumber,DateCreated,FirstNames,Surname,IdentificationNumber,DateOfBirth,Gender,Equity,Citizenship,DisabilityStatus,CurrentEmployment,HighestQualification,Email,MobileNumber,HomeAddress,City,PostalCode,Status,HasConsentedToPopiaDataSharing,EmployerId")] StudentEnrollment studentEnrollment,
             List<int>? selectedCourseIds)
         {
             if (id != studentEnrollment.Id) return NotFound();
+
+            // Check if the ID exists on another student's record
+            if (await _context.StudentEnrollments.AnyAsync(s => s.IdentificationNumber == studentEnrollment.IdentificationNumber && s.Id != id))
+            {
+                ModelState.AddModelError("IdentificationNumber", "Another student is already registered with this Identification Number.");
+            }
 
             if (!ModelState.IsValid)
             {
